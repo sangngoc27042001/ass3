@@ -1,0 +1,4 @@
+Class a{
+                    Var a:int;
+                    Var a:int;
+                    }
