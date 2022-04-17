@@ -32,7 +32,6 @@ class StaticChecker(BaseVisitor,Utils):
  
     
     def check(self):
-        print(self.ast)
         return self.visit(self.ast,StaticChecker.global_envi)
 
     def visitProgram(self,ast, c):
@@ -40,7 +39,7 @@ class StaticChecker(BaseVisitor,Utils):
 
     def visitClassDecl(self,ast, c):
         a = 'cal'
-        return list(map(lambda x: self.visit(x,(c,True)),ast.body.stmt)) 
+        raise Redeclared(Attribute(),'a')
     
 
     
