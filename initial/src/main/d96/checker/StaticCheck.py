@@ -34,12 +34,15 @@ class StaticChecker(BaseVisitor,Utils):
     def check(self):
         return self.visit(self.ast,StaticChecker.global_envi)
 
-    def visitProgram(self,ast, c):
+    def visitProgram(self,ast:Program, c):
+        for x in ast.decl:
+            self.visit(x, c)
         return [self.visit(x,c) for x in ast.decl]
 
     def visitClassDecl(self,ast, c):
         a = 'cal'
-        raise Redeclared(Attribute(),'a')
+        c.append(ast.classname.name)
+        # raise Redeclared(Attribute(),'a')
     
 
     

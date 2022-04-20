@@ -8,9 +8,12 @@ class CheckerSuite(unittest.TestCase):
         input = """Class a{
                     Var a:int;
                     Var a:int;
-                    }"""
+                    }
+                    Class b{}
+                    Class c{}
+                    Class d{}"""
         expect = "Redeclared Attribute: a"
-#         self.assertTrue(TestChecker.test(input,expect,400))
+        self.assertTrue(TestChecker.test(input,expect,400))
 #     def test_401(self):
 #         """Simple program: int main() {} """
 #         input = """Class a{}

@@ -2,3 +2,6 @@ Class a{
                     Var a:int;
                     Var a:int;
                     }
+                    Class b{}
+                    Class c{}
+                    Class d{}
