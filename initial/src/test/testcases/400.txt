@@ -1,6 +1,6 @@
 Class a{
-                    Var a:int;
-                    Var a:int;
+                    Var a:Int;
+                    Var a:Int;
                     }
                     Class b{}
                     Class c{}

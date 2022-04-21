@@ -1,0 +1,5 @@
+Class a{
+                    b(a:int){
+                        Val a:int = 1;
+                    }
+                    }

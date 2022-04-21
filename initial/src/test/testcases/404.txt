@@ -1,0 +1,6 @@
+Class a{
+                    b(){
+                        Var a:int;
+                        Var a:int;
+                    }
+                    }

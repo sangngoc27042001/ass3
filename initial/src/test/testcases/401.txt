@@ -1,0 +1,2 @@
+Class a{}
+        Class a{}
