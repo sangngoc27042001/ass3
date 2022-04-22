@@ -1,5 +1,4 @@
-Class A{
-    Var b:Int;
-    a(){}
+Class a{
+    Var a:Int;
     a(){}
 }

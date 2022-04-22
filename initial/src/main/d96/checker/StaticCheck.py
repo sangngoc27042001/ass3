@@ -7,16 +7,20 @@ from Visitor import *
 from Utils import Utils
 from StaticError import *
 
+class Ctype:
+    pass
+
 class MType:
     def __init__(self,partype,rettype):
         self.partype = partype
         self.rettype = rettype
 
 class Symbol:
-    def __init__(self,name,mtype,value = None):
+    def __init__(self,name,mtype,value = None, kind = None):
         self.name = name
         self.mtype = mtype
         self.value = value
+        self.kind = kind
 
 class StaticChecker(BaseVisitor,Utils):
 
@@ -32,75 +36,71 @@ class StaticChecker(BaseVisitor,Utils):
  
     
     def check(self):
-        return self.visit(self.ast,StaticChecker.global_envi)
+        return self.visit(self.ast,[])
 
-    def visitProgram(self,ast:Program, c):
-        programContex = {}
-        c.append(programContex)
+    def visitProgram(self, ast: Program, c):
         for x in ast.decl:
             self.visit(x, c)
-        # return [self.visit(x,c) for x in ast.decl]
+        return
 
-    def visitClassDecl(self,ast, c):
-        programContex = c[-1]
-        if ast.classname.name in programContex.keys():
-            raise Redeclared(Class(),ast.classname.name)
-        else:
-            programContex[ast.classname.name] = {}
-            for x in ast.memlist:
-                self.visit(x, programContex[ast.classname.name])
+    def visitClassDecl(self,ast:ClassDecl, c):
+        self.visit(ast.classname, (c,Class()))
+        c.append(Symbol(ast.classname.name, Ctype(), None))
+        localBound = len(c)
+        for mem in ast.memlist:
+            self.visit(mem, (c, localBound))
+        return
 
-    def visitAttributeDecl(self,ast, c):
-        classContext = c
+    def visitId(self, ast: Id, c):
+        if ast.name in [x.name for x in c[0]]:
+            raise Redeclared(c[1],ast.name)
+        return ast.name
+
+    def visitAttributeDecl(self,ast: AttributeDecl, c_localBound):
+        c, localBound = c_localBound
+        name = self.visit(ast.decl.variable, (c[localBound:], Attribute())) if type(ast.decl) is VarDecl else self.visit(ast.decl.constant, (c[localBound:], Attribute()))
+        mtype = ast.decl.varType if type(ast.decl) is VarDecl else ast.decl.constType
+        value = ast.decl.varInit if type(ast.decl) is VarDecl else ast.decl.value
         kind = ast.kind
-        if type(ast.decl) is VarDecl:
-            name = ast.decl.variable.name
-            typeat = ast.decl.varType
-            value = ast.decl.varInit
-        else:
-            name = ast.decl.constant.name
-            typeat = ast.decl.constType
-            value = ast.decl.value
-        if name in classContext.keys():
-            raise Redeclared(Attribute(), name)
-        else:
-            classContext[name] = [typeat, kind, name, value]
 
-    def visitMethodDecl(self,ast, c):
-        classContext = c
-        name = ast.name.name
-        if name in classContext.keys():
-            raise Redeclared(Method(), name)
-        kind = ast.kind
-        param = []
-        for x in ast.param:
-            param.append(self.visit(x,(param,'PARAMS')))
-        body = self.visit(ast.body,(c, param))
-        classContext[name] = [kind, name, param, body]
+        c.append(Symbol(name, mtype, value, kind))
+        return
 
-    def visitVarDecl(self,ast, c):
-        if c[1] == 'PARAMS':
-            if ast.variable.name in [x[2] for x in c[0]]:
-                raise Redeclared(Parameter(), ast.variable.name)
-            return [ast.varType, Instance(), ast.variable.name, ast.varInit]
-        elif c[1] == 'INST':
-            if ast.variable.name in [x[2] for x in c[2]] + [x['information'][2] for x in c[3]]:
-                raise Redeclared(Variable(), ast.variable.name)
-            return {'instruction_ast': ast, 'information': [ast.varType, Instance(), ast.variable.name, ast.varInit]}
+    def visitMethodDecl(self,ast: MethodDecl, c_localBound):
+        c, localBound = c_localBound
+        name = self.visit(ast.name, (c[localBound:],Method()))
+        mtype = MType(None, None)
+        c.append(Symbol(name, mtype))
+        localBound = len(c)
+        for param in ast.param:
+            self.visit(param, (c, localBound, 'PARAM'))
+        self.visit(ast.body, (c, localBound))
+        return
 
-    def visitConstDecl(self,ast, c):
-        if c[1] == 'INST':
-            if ast.constant.name in [x[2] for x in c[2]] + [x['information'][2] for x in c[3]]:
-                raise Redeclared(Constant(), ast.constant.name)
-            return {'instruction_ast': ast, 'information': [ast.constType, Instance(), ast.constant.name, ast.value]}
+    def visitVarDecl(self,ast: VarDecl, c_localBound_flag):
+        c, localBound, flag = c_localBound_flag
+        name = self.visit(ast.variable, (c[localBound:], Parameter() if flag=='PARAM' else Variable()))
+        mtype = ast.varType
+        value = ast.varInit
+        c.append(Symbol(name, mtype, value, Instance()))
+        return
 
-    def visitBlock(self, ast, c):
-        param = c[1]
-        res = []
+    def visitConstDecl(self,ast: ConstDecl, c_localBound_flag):
+        c, localBound, flag = c_localBound_flag
+        name = self.visit(ast.constant, (c[localBound:], Constant()))
+        mtype = ast.constType
+        value = ast.value
+        c.append(Symbol(name, mtype, value, Instance()))
+        return
+
+    def visitBlock(self, ast: Block, c_localBound):
+        c, localBound = c_localBound
         for inst in ast.inst:
-            if isinstance(inst,(VarDecl, ConstDecl)):
-                res += [self.visit(inst, (c,'INST',param, res))]
-        return res
+            if type(inst) in [VarDecl, ConstDecl]:
+                self.visit(inst, (c, localBound, 'INST'))
+            elif type(inst) in [Block]:
+                self.visit(inst, (c, len(c)))
+        return
 
 
     
