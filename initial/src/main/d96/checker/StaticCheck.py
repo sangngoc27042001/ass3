@@ -16,11 +16,12 @@ class MType:
         self.rettype = rettype
 
 class Symbol:
-    def __init__(self,name,mtype,value = None, kind = None):
+    def __init__(self,name,mtype,value = None, kind = None, scope = None):
         self.name = name
         self.mtype = mtype
         self.value = value
         self.kind = kind
+        self.scope = scope
 
 class StaticChecker(BaseVisitor,Utils):
 
@@ -44,16 +45,25 @@ class StaticChecker(BaseVisitor,Utils):
         return
 
     def visitClassDecl(self,ast:ClassDecl, c):
-        self.visit(ast.classname, (c,Class()))
+        self.visit(ast.classname, ([x for x in c if type(x.mtype) is Ctype],Class()))
         c.append(Symbol(ast.classname.name, Ctype(), None))
         localBound = len(c)
         for mem in ast.memlist:
             self.visit(mem, (c, localBound))
+        thisClass = list(filter(lambda x: x.name == ast.classname.name, c))[0]
+        thisClass.scope = (localBound, len(c))
         return
 
     def visitId(self, ast: Id, c):
-        if ast.name in [x.name for x in c[0]]:
+        if c[1] == 'CHECK_UNDECLARED':
+            nearestClass = [x for x in c[0] if type(x.mtype) is Ctype][-1]
+            localBound = c[0].index(nearestClass) + 1
+            a = [x.name for x in c[0][localBound:]]
+            if ast not in a:
+                raise Undeclared(c[2],ast.name)
+        elif ast.name in [x.name for x in c[0]]:
             raise Redeclared(c[1],ast.name)
+
         return ast.name
 
     def visitAttributeDecl(self,ast: AttributeDecl, c_localBound):
@@ -75,6 +85,8 @@ class StaticChecker(BaseVisitor,Utils):
         for param in ast.param:
             self.visit(param, (c, localBound, 'PARAM'))
         self.visit(ast.body, (c, localBound))
+        thisMethod = list(filter(lambda x: x.name == ast.name.name, c))[0]
+        thisMethod.scope = (localBound, len(c))
         return
 
     def visitVarDecl(self,ast: VarDecl, c_localBound_flag):
@@ -100,8 +112,14 @@ class StaticChecker(BaseVisitor,Utils):
                 self.visit(inst, (c, localBound, 'INST'))
             elif type(inst) in [Block]:
                 self.visit(inst, (c, len(c)))
+            elif type(inst) in [Assign]:
+                self.visit(inst, (c, localBound))
         return
 
+    def visitAssign(self, ast: Assign, c_localBound):
+        c, localBound = c_localBound
+        if type(ast.lhs) == Id:
+            self.visit(ast.lhs, (c, 'CHECK_UNDECLARED', Identifier()))
 
     
 

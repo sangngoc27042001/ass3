@@ -1,7 +1,12 @@
-Class a{
+
+                    Class c{
+                        Var a:Int;
+                        Var b:Int;
+                        Var c:Int;
+                    }
+                    Class a{
                     Var a:Int;
                     Var a:Int;
                     }
                     Class b{}
-                    Class c{}
                     Class d{}
