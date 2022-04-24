@@ -1,5 +1,5 @@
 Class a{
-                    b(a:int){
-                        Val a:int = 1;
+                    b(a:Int){
+                        Val a:Int = 1;
                     }
                     }

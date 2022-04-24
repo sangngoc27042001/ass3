@@ -1,6 +1,6 @@
 Class a{
                     b(){
-                        Val a:int = 1;
-                        Val a:int = 1;
+                        Val a:Int = 1;
+                        Val a:Int = 1;
                     }
                     }

@@ -16,12 +16,13 @@ class MType:
         self.rettype = rettype
 
 class Symbol:
-    def __init__(self,name,mtype,value = None, kind = None, scope = None):
+    def __init__(self,name,mtype,value = None, kind = None, scope = None, isClassMember = None):
         self.name = name
         self.mtype = mtype
         self.value = value
         self.kind = kind
         self.scope = scope
+        self.isClassMember = isClassMember
 
 class StaticChecker(BaseVisitor,Utils):
 
@@ -55,7 +56,25 @@ class StaticChecker(BaseVisitor,Utils):
         return
 
     def visitId(self, ast: Id, c):
-        if c[1] == 'CHECK_UNDECLARED':
+        if c[1] == 'CHECK_UNDECLARED_METHOD':
+            object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
+            classObject = list(filter(lambda x: x.name == object.mtype.classname.name, c[0]))[0]
+            upperBound, lowerBound = classObject.scope
+            attributeInClass = [x.name for x in c[0][upperBound: lowerBound] if x.isClassMember and type(x.mtype) == MType]
+            if ast.name not in attributeInClass:
+                raise Undeclared(c[2], ast.name)
+        elif c[1] == 'CHECK_UNDECLARED_ATTRIBUTE':
+            object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
+            classObject = list(filter(lambda x: x.name == object.mtype.classname.name, c[0]))[0]
+            upperBound, lowerBound = classObject.scope
+            attributeInClass = [x.name for x in c[0][upperBound: lowerBound] if x.isClassMember and type(x.mtype) != MType]
+            if ast.name not in attributeInClass:
+                raise Undeclared(c[2], ast.name)
+        elif c[1] == 'CHECK_UNDECLARED_CLASS':
+            allClasses = [x.name for x in c[0] if type(x.mtype) is Ctype]
+            if c[3] not in allClasses:
+                raise Undeclared(c[2], ast.name)
+        elif c[1] == 'CHECK_UNDECLARED_IDENTIFIER':
             nearestClass = [x for x in c[0] if type(x.mtype) is Ctype][-1]
             localBound = c[0].index(nearestClass) + 1
             a = [x.name for x in c[0][localBound:]]
@@ -73,14 +92,14 @@ class StaticChecker(BaseVisitor,Utils):
         value = ast.decl.varInit if type(ast.decl) is VarDecl else ast.decl.value
         kind = ast.kind
 
-        c.append(Symbol(name, mtype, value, kind))
+        c.append(Symbol(name, mtype, value, kind, isClassMember=True))
         return
 
     def visitMethodDecl(self,ast: MethodDecl, c_localBound):
         c, localBound = c_localBound
         name = self.visit(ast.name, (c[localBound:],Method()))
         mtype = MType(None, None)
-        c.append(Symbol(name, mtype))
+        c.append(Symbol(name, mtype, isClassMember=True))
         localBound = len(c)
         for param in ast.param:
             self.visit(param, (c, localBound, 'PARAM'))
@@ -94,6 +113,8 @@ class StaticChecker(BaseVisitor,Utils):
         name = self.visit(ast.variable, (c[localBound:], Parameter() if flag=='PARAM' else Variable()))
         mtype = ast.varType
         value = ast.varInit
+        if type(mtype) is ClassType:
+            self.visit(ast.variable, (c, 'CHECK_UNDECLARED_CLASS', Class(), mtype.classname.name))
         c.append(Symbol(name, mtype, value, Instance()))
         return
 
@@ -114,12 +135,22 @@ class StaticChecker(BaseVisitor,Utils):
                 self.visit(inst, (c, len(c)))
             elif type(inst) in [Assign]:
                 self.visit(inst, (c, localBound))
+            elif type(inst) in [CallStmt]:
+                self.visit(inst, (c, localBound))
         return
 
     def visitAssign(self, ast: Assign, c_localBound):
         c, localBound = c_localBound
         if type(ast.lhs) == Id:
-            self.visit(ast.lhs, (c, 'CHECK_UNDECLARED', Identifier()))
+            self.visit(ast.lhs, (c, 'CHECK_UNDECLARED_IDENTIFIER', Identifier()))
+        elif type(ast.lhs) == FieldAccess:
+            if type(ast.lhs.obj) == Id:
+                self.visit(ast.lhs.fieldname, (c, 'CHECK_UNDECLARED_ATTRIBUTE', Attribute(), ast.lhs.obj.name))
+
+    def visitCallStmt(self, ast: CallStmt, c_localBound):
+        c, localBound = c_localBound
+        if type(ast.obj) == Id:
+            self.visit(ast.method, (c, 'CHECK_UNDECLARED_METHOD', Method(), ast.obj.name))
 
     
 

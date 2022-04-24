@@ -1,0 +1,14 @@
+
+                    Class B{
+                        Var b:Int = 1;
+                        c(){}
+                    }
+                    Class A{
+                    b(){
+                        Var b:Int = 1;
+                        Var c:B;
+                        c.b = 1;
+                        c.c();
+                        c.d();
+                    }
+                    }
