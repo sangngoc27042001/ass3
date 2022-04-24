@@ -136,7 +136,7 @@ class CheckerSuite(unittest.TestCase):
                         Var a:C;
                     }
                     }"""
-        expect = "Undeclared Class: a"
+        expect = "Undeclared Class: C"
         self.assertTrue(TestChecker.test(input,expect,411))
 
     def test_412(self):

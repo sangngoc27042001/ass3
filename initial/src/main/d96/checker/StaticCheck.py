@@ -114,7 +114,7 @@ class StaticChecker(BaseVisitor,Utils):
         mtype = ast.varType
         value = ast.varInit
         if type(mtype) is ClassType:
-            self.visit(ast.variable, (c, 'CHECK_UNDECLARED_CLASS', Class(), mtype.classname.name))
+            self.visit(ast.varType.classname, (c, 'CHECK_UNDECLARED_CLASS', Class(), mtype.classname.name))
         c.append(Symbol(name, mtype, value, Instance()))
         return
 
