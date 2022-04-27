@@ -193,5 +193,60 @@ class CheckerSuite(unittest.TestCase):
         expect = "Undeclared Method: d"
         self.assertTrue(TestChecker.test(input, expect, 414))
 
+    def test_415(self):
+        """Simple program: int main() {} """
+        input = """
+                    Class B{
+                        Var b:Int = 1;
+                        c(){}
+                    }
+                    Class A:B{
+                    }
+                    Class C:D{
+                    }"""
+        expect = "Undeclared Class: D"
+        self.assertTrue(TestChecker.test(input, expect, 415))
+
+
+    def test_416(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(){}
+                        }
+                        Class A:B{
+                        }
+                        Class C{
+                            e(){
+                                Var a:A;
+                                a.b= 2;
+                                a.c();
+                                a.e = 2;
+                            }
+                        }"""
+        expect = "Undeclared Attribute: e"
+        self.assertTrue(TestChecker.test(input, expect, 416))
+
+    def test_417(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(){}
+                        }
+                        Class A:B{
+                        }
+                        Class C{
+                            e(){
+                                Var a:A;
+                                a.b= 2;
+                                a.c();
+                                a.e();
+                            }
+                        }"""
+        expect = "Undeclared Method: e"
+        self.assertTrue(TestChecker.test(input, expect, 417))
+
 
 

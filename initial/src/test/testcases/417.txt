@@ -1,0 +1,15 @@
+
+                        Class B{
+                            Var b:Int = 1;
+                            c(){}
+                        }
+                        Class A:B{
+                        }
+                        Class C{
+                            e(){
+                                Var a:A;
+                                a.b= 2;
+                                a.c();
+                                a.e();
+                            }
+                        }

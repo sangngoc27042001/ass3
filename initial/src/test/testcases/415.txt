@@ -1,0 +1,9 @@
+
+                    Class B{
+                        Var b:Int = 1;
+                        c(){}
+                    }
+                    Class A:B{
+                    }
+                    Class C:D{
+                    }

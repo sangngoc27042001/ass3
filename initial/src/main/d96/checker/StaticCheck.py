@@ -16,13 +16,14 @@ class MType:
         self.rettype = rettype
 
 class Symbol:
-    def __init__(self,name,mtype,value = None, kind = None, scope = None, isClassMember = None):
+    def __init__(self,name,mtype,value = None, kind = None, scope = None, isClassMember = None, inherit = None):
         self.name = name
-        self.mtype = mtype
+        self.mtype = mtype #Ctype, MType, IntType, FloatType, BoolType, StringType
         self.value = value
-        self.kind = kind
+        self.kind = kind # Static, Instance
         self.scope = scope
-        self.isClassMember = isClassMember
+        self.isClassMember = isClassMember # True if is a class member
+        self.inherit = inherit # String, name of a class
 
 class StaticChecker(BaseVisitor,Utils):
 
@@ -47,7 +48,8 @@ class StaticChecker(BaseVisitor,Utils):
 
     def visitClassDecl(self,ast:ClassDecl, c):
         self.visit(ast.classname, ([x for x in c if type(x.mtype) is Ctype],Class()))
-        c.append(Symbol(ast.classname.name, Ctype(), None))
+        inherit = self.visit(ast.parentname, (c, 'CHECK_UNDECLARED_CLASS', Class(), ast.parentname.name)) if ast.parentname is not None else None
+        c.append(Symbol(ast.classname.name, Ctype(), None, inherit=inherit))
         localBound = len(c)
         for mem in ast.memlist:
             self.visit(mem, (c, localBound))
@@ -58,16 +60,12 @@ class StaticChecker(BaseVisitor,Utils):
     def visitId(self, ast: Id, c):
         if c[1] == 'CHECK_UNDECLARED_METHOD':
             object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
-            classObject = list(filter(lambda x: x.name == object.mtype.classname.name, c[0]))[0]
-            upperBound, lowerBound = classObject.scope
-            attributeInClass = [x.name for x in c[0][upperBound: lowerBound] if x.isClassMember and type(x.mtype) == MType]
-            if ast.name not in attributeInClass:
+            methodInClass = findingMemArrRecursively(c[0], object.mtype.classname.name, False)
+            if ast.name not in methodInClass:
                 raise Undeclared(c[2], ast.name)
         elif c[1] == 'CHECK_UNDECLARED_ATTRIBUTE':
             object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
-            classObject = list(filter(lambda x: x.name == object.mtype.classname.name, c[0]))[0]
-            upperBound, lowerBound = classObject.scope
-            attributeInClass = [x.name for x in c[0][upperBound: lowerBound] if x.isClassMember and type(x.mtype) != MType]
+            attributeInClass = findingMemArrRecursively(c[0], object.mtype.classname.name)
             if ast.name not in attributeInClass:
                 raise Undeclared(c[2], ast.name)
         elif c[1] == 'CHECK_UNDECLARED_CLASS':
@@ -151,6 +149,20 @@ class StaticChecker(BaseVisitor,Utils):
         c, localBound = c_localBound
         if type(ast.obj) == Id:
             self.visit(ast.method, (c, 'CHECK_UNDECLARED_METHOD', Method(), ast.obj.name))
+
+#HELP Function
+def findingMemArrRecursively(c, classname, attribute=True):
+    classObject = list(filter(lambda x: x.name == classname and type(x.mtype) == Ctype, c))[0]
+    upperBound, lowerBound = classObject.scope
+    if attribute:
+        arrAttributeTemp = [x.name for x in c[upperBound: lowerBound] if x.isClassMember and type(x.mtype) != MType]
+    else:
+        arrAttributeTemp = [x.name for x in c[upperBound: lowerBound] if x.isClassMember and type(x.mtype) == MType]
+    if classObject.inherit == None:
+        return arrAttributeTemp
+    else:
+        return arrAttributeTemp + findingMemArrRecursively(c, classObject.inherit, attribute)
+
 
     
 
