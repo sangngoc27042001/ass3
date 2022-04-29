@@ -248,5 +248,96 @@ class CheckerSuite(unittest.TestCase):
         expect = "Undeclared Method: e"
         self.assertTrue(TestChecker.test(input, expect, 417))
 
+    def test_418(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Val a:Int = 2;
+                                a=3;
+                            }
+                        }"""
+        expect = "Cannot Assign To Constant: AssignStmt(Id(a),IntLit(3))"
+        self.assertTrue(TestChecker.test(input, expect, 418))
+
+    def test_419(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 2;
+                                Var b:Array[Int,5];
+                                b[1]=1;
+                                a[1]=1;
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: ArrayCell(Id(b),[IntLit(1)])"
+        self.assertTrue(TestChecker.test(input, expect, 419))
+
+    def test_420(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 2;
+                                Var b:Array[Int,5];
+                                b[1.2]=1;
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: ArrayCell(Id(b),[FloatLit(1.2)])"
+        self.assertTrue(TestChecker.test(input, expect, 420))
+
+    def test_421(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 1+2;
+                                Var b:Float = 1+2.2;
+                                Var c:Float = 1+True;
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: BinaryOp(+,IntLit(1),BooleanLit(True))"
+        self.assertTrue(TestChecker.test(input, expect, 421))
+
+    def test_422(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var c:String = "abc" +. "def";
+                                Var d:Boolean = ("abc" +. "def") ==. "ghi";
+                                Var e:String = ("abc" ==. "def") +. "ghi";
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: BinaryOp(+.,BinaryOp(==.,StringLit(abc),StringLit(def)),StringLit(ghi))"
+        self.assertTrue(TestChecker.test(input, expect, 422))
+
+    def test_423(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var c:Float = 1.22;
+                                Var d:Boolean = (("abc" +. "def") ==. "ghi") || False;
+                                Var e:Boolean = 0==False;
+                                Var f:Boolean = "abc"||1;
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: BinaryOp(||,StringLit(abc),IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 423))
+
+    def test_424(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var c:Float = --------1.22;
+                                Var d:Boolean = !((("abc" +. "def") ==. "ghi") || False);
+                                Var e:Float = !!!!--1.22;
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: UnaryOp(!,UnaryOp(-,UnaryOp(-,FloatLit(1.22))))"
+        self.assertTrue(TestChecker.test(input, expect, 423))
 
 

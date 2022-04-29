@@ -1,0 +1,8 @@
+
+                        Class C{
+                            e(){
+                                Var a:Int = 2;
+                                Var b:Array[Int,5];
+                                b[1.2]=1;
+                            }
+                        }

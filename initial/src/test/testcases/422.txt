@@ -1,0 +1,8 @@
+
+                        Class C{
+                            e(){
+                                Var c:String = "abc" +. "def";
+                                Var d:Boolean = ("abc" +. "def") ==. "ghi";
+                                Var e:String = ("abc" ==. "def") +. "ghi";
+                            }
+                        }

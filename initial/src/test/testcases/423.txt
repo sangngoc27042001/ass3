@@ -1,0 +1,8 @@
+
+                        Class C{
+                            e(){
+                                Var c:Float = --------1.22;
+                                Var d:Boolean = !((("abc" +. "def") ==. "ghi") || False);
+                                Var e:Float = !!!!--1.22;
+                            }
+                        }

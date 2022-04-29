@@ -16,7 +16,7 @@ class MType:
         self.rettype = rettype
 
 class Symbol:
-    def __init__(self,name,mtype,value = None, kind = None, scope = None, isClassMember = None, inherit = None):
+    def __init__(self,name,mtype,value = None, kind = None, scope = None, isClassMember = None, inherit = None, immutable = False):
         self.name = name
         self.mtype = mtype #Ctype, MType, IntType, FloatType, BoolType, StringType
         self.value = value
@@ -24,6 +24,7 @@ class Symbol:
         self.scope = scope
         self.isClassMember = isClassMember # True if is a class member
         self.inherit = inherit # String, name of a class
+        self.immutable = immutable # True if Symbol is a constant, otherwise, False
 
 class StaticChecker(BaseVisitor,Utils):
 
@@ -58,26 +59,36 @@ class StaticChecker(BaseVisitor,Utils):
         return
 
     def visitId(self, ast: Id, c):
+        if c[1] == 'CHECK_UNDECLARED_ATTRIBUTE':
+            object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
+            attributeInClass = findingMemArrRecursively(c[0], object.mtype.classname.name)
+            if ast.name not in attributeInClass:
+                raise Undeclared(c[2], ast.name)
+            return ast.name
+        if c[1] =='CHECK_CANNOT_ASSIGN_TO_CONSTANT':
+            object = list(filter(lambda x: x.name == ast.name, c[0]))[-1]
+            if object.immutable:
+                raise CannotAssignToConstant(c[2])
+            return ast.name
+
         if c[1] == 'CHECK_UNDECLARED_METHOD':
             object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
             methodInClass = findingMemArrRecursively(c[0], object.mtype.classname.name, False)
             if ast.name not in methodInClass:
                 raise Undeclared(c[2], ast.name)
-        elif c[1] == 'CHECK_UNDECLARED_ATTRIBUTE':
-            object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
-            attributeInClass = findingMemArrRecursively(c[0], object.mtype.classname.name)
-            if ast.name not in attributeInClass:
-                raise Undeclared(c[2], ast.name)
-        elif c[1] == 'CHECK_UNDECLARED_CLASS':
+            return ast.name
+        if c[1] == 'CHECK_UNDECLARED_CLASS':
             allClasses = [x.name for x in c[0] if type(x.mtype) is Ctype]
             if c[3] not in allClasses:
                 raise Undeclared(c[2], ast.name)
-        elif c[1] == 'CHECK_UNDECLARED_IDENTIFIER':
+            return ast.name
+        if c[1] == 'CHECK_UNDECLARED_IDENTIFIER':
             nearestClass = [x for x in c[0] if type(x.mtype) is Ctype][-1]
             localBound = c[0].index(nearestClass) + 1
             a = [x.name for x in c[0][localBound:]]
-            if ast not in a:
-                raise Undeclared(c[2],ast.name)
+            if ast.name not in a:
+                raise Undeclared(c[2], ast.name)
+            return ast.name
         elif ast.name in [x.name for x in c[0]]:
             raise Redeclared(c[1],ast.name)
 
@@ -113,6 +124,11 @@ class StaticChecker(BaseVisitor,Utils):
         value = ast.varInit
         if type(mtype) is ClassType:
             self.visit(ast.varType.classname, (c, 'CHECK_UNDECLARED_CLASS', Class(), mtype.classname.name))
+
+        if not((value is None) or ( isinstance(value, NullLiteral))):
+            typeRHS = self.visit(ast.varInit, c)
+            if type(ast.varType) != type(typeRHS):
+                raise TypeMismatchInStatement(ast)
         c.append(Symbol(name, mtype, value, Instance()))
         return
 
@@ -121,7 +137,7 @@ class StaticChecker(BaseVisitor,Utils):
         name = self.visit(ast.constant, (c[localBound:], Constant()))
         mtype = ast.constType
         value = ast.value
-        c.append(Symbol(name, mtype, value, Instance()))
+        c.append(Symbol(name, mtype, value, Instance(), immutable=True))
         return
 
     def visitBlock(self, ast: Block, c_localBound):
@@ -141,9 +157,84 @@ class StaticChecker(BaseVisitor,Utils):
         c, localBound = c_localBound
         if type(ast.lhs) == Id:
             self.visit(ast.lhs, (c, 'CHECK_UNDECLARED_IDENTIFIER', Identifier()))
+            self.visit(ast.lhs, (c, 'CHECK_CANNOT_ASSIGN_TO_CONSTANT', ast))
         elif type(ast.lhs) == FieldAccess:
             if type(ast.lhs.obj) == Id:
                 self.visit(ast.lhs.fieldname, (c, 'CHECK_UNDECLARED_ATTRIBUTE', Attribute(), ast.lhs.obj.name))
+        elif type(ast.lhs) == ArrayCell:
+            if type(ast.lhs.arr) == Id:
+                objectArr = list(filter(lambda x: x.name == ast.lhs.arr.name, c))[-1]
+                if type(objectArr.mtype) != ArrayType:
+                    raise TypeMismatchInExpression(ast.lhs)
+            if type(ast.lhs.idx) != IntLiteral:
+                raise TypeMismatchInExpression(ast.lhs)
+
+        typeRHS = self.visit(ast.exp, c)
+
+
+    def visitBinaryOp(self, ast:BinaryOp, c):
+        typeLeft = self.visit(ast.left, c)
+        typeRight = self.visit(ast.right, c)
+        op = ast.op
+        if op in ['+', '-', '*', '/']:
+            if not isinstance(typeLeft, (IntType, FloatType)) or not isinstance(typeRight, (IntType, FloatType)):
+                raise TypeMismatchInExpression(ast)
+            if isinstance(typeLeft, FloatType) or isinstance(typeRight, FloatType):
+                return FloatType()
+            return IntType()
+        elif op in ['%']:
+            if not isinstance(typeLeft, IntType) or not isinstance(typeRight, IntType):
+                raise TypeMismatchInExpression(ast)
+            return IntType()
+        elif op in ['&&', '||']:
+            if not isinstance(typeLeft, BoolType) or not isinstance(typeRight, BoolType):
+                raise TypeMismatchInExpression(ast)
+            return BoolType()
+        elif op in ['==.', '+.']:
+            if not isinstance(typeLeft, StringType) or not isinstance(typeRight, StringType):
+                raise TypeMismatchInExpression(ast)
+            if op == '==.':
+                return BoolType()
+            return StringType()
+        elif op in ['==', '!=']:
+            if not isinstance(typeLeft, (IntType, BoolType)) or not isinstance(typeRight, (IntType, BoolType)):
+                raise TypeMismatchInExpression(ast)
+            return BoolType()
+        elif op in ['==', '!=']:
+            if not isinstance(typeLeft, (IntType, BoolType)) or not isinstance(typeRight, (IntType, BoolType)):
+                raise TypeMismatchInExpression(ast)
+            return BoolType()
+        elif op in ['<', '>', '<=', '>=']:
+            if not isinstance(typeLeft, (IntType, FloatType)) or not isinstance(typeRight, (IntType, FloatType)):
+                raise TypeMismatchInExpression(ast)
+            return BoolType()
+
+    def visitUnaryOp(self, ast: UnaryOp, c):
+        exp = self.visit(ast.body, c)
+        op = ast.op
+        if op in ['-']:
+            if not isinstance(exp, (IntType, FloatType)):
+                raise TypeMismatchInExpression(ast)
+            return IntType() if isinstance(exp, IntType) else FloatType()
+        if op in ['!']:
+            if not isinstance(exp, BoolType):
+                raise TypeMismatchInExpression(ast)
+            return BoolType()
+    def visitFloatLiteral(self, ast, c):
+        return FloatType()
+
+    def visitStringLiteral(self, ast, c):
+        return StringType()
+
+    def visitBooleanLiteral(self, ast, c):
+        return BoolType()
+
+    def visitIntLiteral(self, ast:IntLiteral, c):
+        return IntType()
+
+    def visitNullLiteral(self, ast:IntLiteral, c):
+        return NullLiteral()
+
 
     def visitCallStmt(self, ast: CallStmt, c_localBound):
         c, localBound = c_localBound
