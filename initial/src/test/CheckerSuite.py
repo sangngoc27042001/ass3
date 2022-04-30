@@ -535,3 +535,24 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Expression: CallExpr(Id(a),Id(d),[IntLit(1),IntLit(2)])"
         self.assertTrue(TestChecker.test(input, expect, 435))
 
+    def test_436(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Val d:Float = a.c(1,2);
+                                a.d(1,2,"a");
+                                a.d(1,2,3);
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: Call(Id(a),Id(d),[IntLit(1),IntLit(2),IntLit(3)])"
+        self.assertTrue(TestChecker.test(input, expect, 435))
+

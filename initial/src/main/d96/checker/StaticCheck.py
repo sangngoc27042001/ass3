@@ -260,6 +260,21 @@ class StaticChecker(BaseVisitor,Utils):
         c, localBound = c_localBound
         if type(ast.obj) == Id:
             self.visit(ast.method, (c, 'CHECK_UNDECLARED_METHOD', Method(), ast.obj.name))
+            object = list(filter(lambda x: x.name == ast.obj.name, c))[-1]
+            if type(object.mtype) != ClassType:
+                raise TypeMismatchInStatement(ast)
+            classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
+            upperBound, lowerBound = classObject.scope
+            methodObject = findingMemArrObjectRecursively(c, classObject.name, False)[-1]
+            if methodObject.mtype.rettype is not None:
+                raise TypeMismatchInStatement(ast)
+            typeDeclList = [type(x) for x in methodObject.mtype.partype]
+            typeAssignList = [type(self.visit(x, c)) for x in ast.param]
+            if len(typeDeclList) != len(typeAssignList):
+                raise TypeMismatchInStatement(ast)
+            for (typeDecl, typeAssign) in zip(typeDeclList, typeAssignList):
+                if not checkCoerceType(typeDecl, typeAssign):
+                    raise TypeMismatchInStatement(ast)
 
     def visitReturn(self, ast: Return, c):
         returnType = self.visit(ast.expr, c)
