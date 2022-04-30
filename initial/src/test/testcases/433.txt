@@ -1,0 +1,6 @@
+
+                        Class C{
+                            e(){
+                                Val a : Int = 1.2;
+                            }
+                        }

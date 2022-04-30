@@ -146,7 +146,7 @@ class StaticChecker(BaseVisitor,Utils):
         if not((value is None) or ( isinstance(value, NullLiteral))):
             typeRHS = self.visit(ast.value, c)
             if not checkCoerceType(type(ast.constType), type(typeRHS)):
-                raise TypeMismatchInStatement(ast)
+                raise TypeMismatchInConstant(ast)
         c.append(Symbol(name, mtype, value, Instance(), immutable=True))
         return
 

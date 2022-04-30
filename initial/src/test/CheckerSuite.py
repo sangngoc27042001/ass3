@@ -498,10 +498,40 @@ class CheckerSuite(unittest.TestCase):
                         Class C{
                             e(){
                                 Var a:B;
-                                Var d:Float = a.c(1,2);
+                                Val d:Float = a.c(1,2);
                                 Val e:String = a.c(1,2);
                             }
                         }"""
-        expect = "Type Mismatch In Statement: ConstDecl(Id(e),StringType,CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)]))"
+        expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(e),StringType,CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)]))"
         self.assertTrue(TestChecker.test(input, expect, 432))
+    def test_433(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Val a : Int = 1.2;
+                            }
+                        }"""
+        expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(a),IntType,FloatLit(1.2))"
+        self.assertTrue(TestChecker.test(input, expect, 434))
+
+    def test_435(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Val d:Float = a.c(1,2);
+                                Val e:String = a.d(1,2);
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: CallExpr(Id(a),Id(d),[IntLit(1),IntLit(2)])"
+        self.assertTrue(TestChecker.test(input, expect, 435))
 

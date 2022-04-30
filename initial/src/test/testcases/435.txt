@@ -10,6 +10,6 @@
                             e(){
                                 Var a:B;
                                 Val d:Float = a.c(1,2);
-                                Val e:String = a.c(1,2);
+                                Val e:String = a.d(1,2);
                             }
                         }
