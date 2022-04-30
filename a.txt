@@ -1,0 +1,18 @@
+Program = [
+{
+name:B
+mtype: Ctype()
+inherit:None
+scope:(1,3)
+}
+{b}
+{c}
+{
+name:B
+mtype: Ctype()
+inherit:None
+scope:(1,3)
+}
+]
+lb, ub =
+Program[1:4]

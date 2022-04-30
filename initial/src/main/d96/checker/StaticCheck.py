@@ -18,11 +18,11 @@ class MType:
 class Symbol:
     def __init__(self,name,mtype,value = None, kind = None, scope = None, isClassMember = None, inherit = None, immutable = False, returnType = None):
         self.name = name
-        self.mtype = mtype #Ctype, MType, IntType, FloatType, BoolType, StringType
+        self.mtype = mtype #Ctype(), MType(), IntType(), FloatType(), BoolType(), StringType()
         self.value = value
-        self.kind = kind # Static, Instance
-        self.scope = scope
-        self.isClassMember = isClassMember # True if is a class member
+        self.kind = kind # Static(), Instance()
+        self.scope = scope #tuple if mtype == Ctype()
+        self.isClassMember = isClassMember # True if is a class member (method or attribute)
         self.inherit = inherit # String, name of a class
         self.immutable = immutable # True if Symbol is a constant, otherwise, False
 
@@ -48,14 +48,14 @@ class StaticChecker(BaseVisitor,Utils):
             self.visit(x, c)
         return
 
-    def visitClassDecl(self,ast:ClassDecl, c):
+    def visitClassDecl(self, ast: ClassDecl, c):
         self.visit(ast.classname, ([x for x in c if type(x.mtype) is Ctype],Class()))
         inherit = self.visit(ast.parentname, (c, 'CHECK_UNDECLARED_CLASS', Class(), ast.parentname.name)) if ast.parentname is not None else None
         c.append(Symbol(ast.classname.name, Ctype(), None, inherit=inherit))
         localBound = len(c)
         for mem in ast.memlist:
             self.visit(mem, (c, localBound))
-        thisClass = list(filter(lambda x: x.name == ast.classname.name, c))[0]
+        thisClass = c[localBound-1]
         thisClass.scope = (localBound, len(c))
         return
 

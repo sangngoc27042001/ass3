@@ -230,7 +230,7 @@ class CheckerSuite(unittest.TestCase):
 
     def test_417(self):
         """Simple program: int main() {} """
-        input = """
+        input = """ 
                         Class B{
                             Var b:Int = 1;
                             c(){}
@@ -554,5 +554,5 @@ class CheckerSuite(unittest.TestCase):
                             }
                         }"""
         expect = "Type Mismatch In Statement: Call(Id(a),Id(d),[IntLit(1),IntLit(2),IntLit(3)])"
-        self.assertTrue(TestChecker.test(input, expect, 435))
+        self.assertTrue(TestChecker.test(input, expect, 436))
 
