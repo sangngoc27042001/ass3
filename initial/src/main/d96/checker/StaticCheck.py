@@ -269,6 +269,18 @@ class StaticChecker(BaseVisitor,Utils):
                 if not checkCoerceType(typeDecl, typeAssign):
                     raise TypeMismatchInExpression(ast)
             return methodObject.mtype.rettype
+    def visitFieldAccess(self, ast:FieldAccess, c):
+        if type(ast.obj) == Id:
+            object = list(filter(lambda x: x.name == ast.obj.name, c))[-1]
+            if type(object.mtype) != ClassType:
+                raise TypeMismatchInExpression(ast)
+            classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
+            upperBound, lowerBound = classObject.scope
+            attributeObject = list(filter(lambda x: x.name == ast.fieldname.name and type(x.mtype) != MType, c[upperBound:lowerBound]))
+            if len(attributeObject)==0:
+                raise Undeclared(Attribute(), ast.fieldname.name)
+            attributeObject = attributeObject[-1]
+            return attributeObject.mtype
 
 
 #HELP Function

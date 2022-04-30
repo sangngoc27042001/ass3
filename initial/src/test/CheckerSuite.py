@@ -441,3 +441,47 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Expression: CallExpr(Id(a),Id(d),[])"
         self.assertTrue(TestChecker.test(input, expect, 429))
 
+    def test_430(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Var d:Float = a.c(1,2);
+                                a.d();
+                                Var e:Float = a.b;
+                                Var f:Float = a.d;
+                            }
+                        }"""
+        expect = "Undeclared Attribute: d"
+        self.assertTrue(TestChecker.test(input, expect, 430))
+
+    def test_431(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Var d:Float = a.c(1,2);
+                                a.d();
+                                Var e:Float = a.b;
+                                Var f:String = a.b;
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: VarDecl(Id(f),StringType,FieldAccess(Id(a),Id(b)))"
+        self.assertTrue(TestChecker.test(input, expect, 431))
+
