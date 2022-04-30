@@ -271,7 +271,7 @@ class CheckerSuite(unittest.TestCase):
                                 a[1]=1;
                             }
                         }"""
-        expect = "Type Mismatch In Expression: ArrayCell(Id(b),[IntLit(1)])"
+        expect = "Type Mismatch In Expression: ArrayCell(Id(a),[IntLit(1)])"
         self.assertTrue(TestChecker.test(input, expect, 419))
 
     def test_420(self):

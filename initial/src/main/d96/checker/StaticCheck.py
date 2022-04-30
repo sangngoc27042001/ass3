@@ -183,7 +183,7 @@ class StaticChecker(BaseVisitor,Utils):
                     raise TypeMismatchInExpression(ast.lhs)
                 typeLHS = list(filter(lambda x: x.name == ast.lhs.arr.name, c))[-1].mtype.eleType
 
-            if type(ast.lhs.idx) != IntLiteral:
+            if not all(isinstance(ele, IntLiteral) for ele in ast.lhs.idx):
                 raise TypeMismatchInExpression(ast.lhs)
 
 

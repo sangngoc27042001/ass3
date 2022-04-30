@@ -1,1 +1,1 @@
-Type Mismatch In Expression: ArrayCell(Id(b),[IntLit(1)])
+Type Mismatch In Expression: ArrayCell(Id(a),[IntLit(1)])
