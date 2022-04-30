@@ -220,7 +220,7 @@ class CheckerSuite(unittest.TestCase):
                         Class C{
                             e(){
                                 Var a:A;
-                                a.b= 2;
+                                a.b = 2;
                                 a.c();
                                 a.e = 2;
                             }
@@ -484,4 +484,24 @@ class CheckerSuite(unittest.TestCase):
                         }"""
         expect = "Type Mismatch In Statement: VarDecl(Id(f),StringType,FieldAccess(Id(a),Id(b)))"
         self.assertTrue(TestChecker.test(input, expect, 431))
+
+    def test_432(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Var d:Float = a.c(1,2);
+                                Val e:String = a.c(1,2);
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: ConstDecl(Id(e),StringType,CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)]))"
+        self.assertTrue(TestChecker.test(input, expect, 432))
 

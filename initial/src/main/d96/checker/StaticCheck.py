@@ -140,6 +140,13 @@ class StaticChecker(BaseVisitor,Utils):
         name = self.visit(ast.constant, (c[localBound:], Constant()))
         mtype = ast.constType
         value = ast.value
+        if type(mtype) is ClassType:
+            self.visit(ast.constType.classname, (c, 'CHECK_UNDECLARED_CLASS', Class(), mtype.classname.name))
+
+        if not((value is None) or ( isinstance(value, NullLiteral))):
+            typeRHS = self.visit(ast.value, c)
+            if not checkCoerceType(type(ast.constType), type(typeRHS)):
+                raise TypeMismatchInStatement(ast)
         c.append(Symbol(name, mtype, value, Instance(), immutable=True))
         return
 
@@ -160,22 +167,29 @@ class StaticChecker(BaseVisitor,Utils):
 
     def visitAssign(self, ast: Assign, c_localBound):
         c, localBound = c_localBound
+        typeLHS = None
         if type(ast.lhs) == Id:
             self.visit(ast.lhs, (c, 'CHECK_UNDECLARED_IDENTIFIER', Identifier()))
             self.visit(ast.lhs, (c, 'CHECK_CANNOT_ASSIGN_TO_CONSTANT', ast))
+            typeLHS = list(filter(lambda x: x.name == ast.lhs.name, c))[-1].mtype
         elif type(ast.lhs) == FieldAccess:
             if type(ast.lhs.obj) == Id:
                 self.visit(ast.lhs.fieldname, (c, 'CHECK_UNDECLARED_ATTRIBUTE', Attribute(), ast.lhs.obj.name))
+            typeLHS = self.visit(ast.lhs,c)
         elif type(ast.lhs) == ArrayCell:
             if type(ast.lhs.arr) == Id:
                 objectArr = list(filter(lambda x: x.name == ast.lhs.arr.name, c))[-1]
                 if type(objectArr.mtype) != ArrayType:
                     raise TypeMismatchInExpression(ast.lhs)
+                typeLHS = list(filter(lambda x: x.name == ast.lhs.arr.name, c))[-1].mtype.eleType
+
             if type(ast.lhs.idx) != IntLiteral:
                 raise TypeMismatchInExpression(ast.lhs)
 
-        typeRHS = self.visit(ast.exp, c)
 
+        typeRHS = self.visit(ast.exp, c)
+        if not checkCoerceType(typeLHS, typeRHS):
+            raise TypeMismatchInStatement(ast)
 
     def visitBinaryOp(self, ast:BinaryOp, c):
         typeLeft = self.visit(ast.left, c)
@@ -276,8 +290,9 @@ class StaticChecker(BaseVisitor,Utils):
                 raise TypeMismatchInExpression(ast)
             classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
             upperBound, lowerBound = classObject.scope
-            attributeObject = list(filter(lambda x: x.name == ast.fieldname.name and type(x.mtype) != MType, c[upperBound:lowerBound]))
-            if len(attributeObject)==0:
+            attributeObjectList = findingMemArrObjectRecursively(c, classObject.name)
+            attributeObject = list(filter(lambda x: x.name == ast.fieldname.name, attributeObjectList))
+            if len(attributeObject) == 0:
                 raise Undeclared(Attribute(), ast.fieldname.name)
             attributeObject = attributeObject[-1]
             return attributeObject.mtype
@@ -295,6 +310,18 @@ def findingMemArrRecursively(c, classname, attribute=True):
         return arrAttributeTemp
     else:
         return arrAttributeTemp + findingMemArrRecursively(c, classObject.inherit, attribute)
+
+def findingMemArrObjectRecursively(c, classname, attribute=True):
+    classObject = list(filter(lambda x: x.name == classname and type(x.mtype) == Ctype, c))[0]
+    upperBound, lowerBound = classObject.scope
+    if attribute:
+        arrAttributeTemp = [x for x in c[upperBound: lowerBound] if x.isClassMember and type(x.mtype) != MType]
+    else:
+        arrAttributeTemp = [x for x in c[upperBound: lowerBound] if x.isClassMember and type(x.mtype) == MType]
+    if classObject.inherit == None:
+        return arrAttributeTemp
+    else:
+        return arrAttributeTemp + findingMemArrObjectRecursively(c, classObject.inherit, attribute)
 
 def checkCoerceType(typeDecl, typeAssign):
     if typeDecl is FloatType:
