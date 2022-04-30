@@ -16,7 +16,7 @@ class MType:
         self.rettype = rettype
 
 class Symbol:
-    def __init__(self,name,mtype,value = None, kind = None, scope = None, isClassMember = None, inherit = None, immutable = False):
+    def __init__(self,name,mtype,value = None, kind = None, scope = None, isClassMember = None, inherit = None, immutable = False, returnType = None):
         self.name = name
         self.mtype = mtype #Ctype, MType, IntType, FloatType, BoolType, StringType
         self.value = value
@@ -32,7 +32,8 @@ class StaticChecker(BaseVisitor,Utils):
     Symbol("getInt",MType([],IntType())),
     Symbol("putIntLn",MType([IntType()],VoidType()))
     ]
-            
+
+    returnTypeStack = []
     
     def __init__(self,ast):
         self.ast = ast
@@ -107,7 +108,7 @@ class StaticChecker(BaseVisitor,Utils):
     def visitMethodDecl(self,ast: MethodDecl, c_localBound):
         c, localBound = c_localBound
         name = self.visit(ast.name, (c[localBound:],Method()))
-        mtype = MType(None, None)
+        mtype = MType([], None)
         c.append(Symbol(name, mtype, isClassMember=True))
         localBound = len(c)
         for param in ast.param:
@@ -115,6 +116,8 @@ class StaticChecker(BaseVisitor,Utils):
         self.visit(ast.body, (c, localBound))
         thisMethod = list(filter(lambda x: x.name == ast.name.name, c))[0]
         thisMethod.scope = (localBound, len(c))
+        thisMethod.mtype.partype = [param.varType for param in ast.param]
+        thisMethod.mtype.rettype = self.returnTypeStack.pop() if len(self.returnTypeStack) != 0 else None
         return
 
     def visitVarDecl(self,ast: VarDecl, c_localBound_flag):
@@ -127,7 +130,7 @@ class StaticChecker(BaseVisitor,Utils):
 
         if not((value is None) or ( isinstance(value, NullLiteral))):
             typeRHS = self.visit(ast.varInit, c)
-            if type(ast.varType) != type(typeRHS):
+            if not checkCoerceType(type(ast.varType), type(typeRHS)):
                 raise TypeMismatchInStatement(ast)
         c.append(Symbol(name, mtype, value, Instance()))
         return
@@ -151,6 +154,8 @@ class StaticChecker(BaseVisitor,Utils):
                 self.visit(inst, (c, localBound))
             elif type(inst) in [CallStmt]:
                 self.visit(inst, (c, localBound))
+            elif type(inst) in [Return]:
+                self.visit(inst, c)
         return
 
     def visitAssign(self, ast: Assign, c_localBound):
@@ -220,6 +225,7 @@ class StaticChecker(BaseVisitor,Utils):
             if not isinstance(exp, BoolType):
                 raise TypeMismatchInExpression(ast)
             return BoolType()
+
     def visitFloatLiteral(self, ast, c):
         return FloatType()
 
@@ -229,10 +235,10 @@ class StaticChecker(BaseVisitor,Utils):
     def visitBooleanLiteral(self, ast, c):
         return BoolType()
 
-    def visitIntLiteral(self, ast:IntLiteral, c):
+    def visitIntLiteral(self, ast: IntLiteral, c):
         return IntType()
 
-    def visitNullLiteral(self, ast:IntLiteral, c):
+    def visitNullLiteral(self, ast: NullLiteral, c):
         return NullLiteral()
 
 
@@ -240,6 +246,30 @@ class StaticChecker(BaseVisitor,Utils):
         c, localBound = c_localBound
         if type(ast.obj) == Id:
             self.visit(ast.method, (c, 'CHECK_UNDECLARED_METHOD', Method(), ast.obj.name))
+
+    def visitReturn(self, ast: Return, c):
+        returnType = self.visit(ast.expr, c)
+        self.returnTypeStack.append(returnType)
+
+    def visitCallExpr(self, ast:CallExpr, c):
+        if type(ast.obj) == Id:
+            object = list(filter(lambda x: x.name == ast.obj.name, c))[-1]
+            if type(object.mtype) != ClassType:
+                raise TypeMismatchInExpression(ast)
+            classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
+            upperBound, lowerBound = classObject.scope
+            methodObject = list(filter(lambda x: x.name == ast.method.name and type(x.mtype) == MType, c[upperBound:lowerBound]))[0]
+            if methodObject.mtype.rettype is None:
+                raise TypeMismatchInExpression(ast)
+            typeDeclList = [type(x) for x in methodObject.mtype.partype]
+            typeAssignList = [type(self.visit(x, c)) for x in ast.param]
+            if len(typeDeclList) != len(typeAssignList):
+                raise TypeMismatchInExpression(ast)
+            for (typeDecl, typeAssign) in zip(typeDeclList,typeAssignList):
+                if not checkCoerceType(typeDecl, typeAssign):
+                    raise TypeMismatchInExpression(ast)
+            return methodObject.mtype.rettype
+
 
 #HELP Function
 def findingMemArrRecursively(c, classname, attribute=True):
@@ -253,6 +283,12 @@ def findingMemArrRecursively(c, classname, attribute=True):
         return arrAttributeTemp
     else:
         return arrAttributeTemp + findingMemArrRecursively(c, classObject.inherit, attribute)
+
+def checkCoerceType(typeDecl, typeAssign):
+    if typeDecl is FloatType:
+        if typeAssign in [FloatType, IntType]:
+            return True
+    return typeDecl == typeAssign
 
 
     

@@ -340,4 +340,104 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Expression: UnaryOp(!,UnaryOp(-,UnaryOp(-,FloatLit(1.22))))"
         self.assertTrue(TestChecker.test(input, expect, 423))
 
+    def test_425(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Var d:Int = a.c(1,2);
+                                Var e:Int = a.c(1,"abc");
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: CallExpr(Id(a),Id(c),[IntLit(1),StringLit(abc)])"
+        self.assertTrue(TestChecker.test(input, expect, 425))
+
+    def test_426(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Var d:Float = a.c(1,2);
+                                Var e:String = a.c(1.1,2);
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: CallExpr(Id(a),Id(c),[FloatLit(1.1),IntLit(2)])"
+        self.assertTrue(TestChecker.test(input, expect, 426))
+
+    def test_427(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Var d:Float = a.c(1,2);
+                                Var e:String = a.c(1.1,2);
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: CallExpr(Id(a),Id(c),[FloatLit(1.1),IntLit(2)])"
+        self.assertTrue(TestChecker.test(input, expect, 427))
+
+    def test_428(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Var d:Float = a.c(1,2);
+                                Var e:String = a.c(1,2);
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: VarDecl(Id(e),StringType,CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)]))"
+        self.assertTrue(TestChecker.test(input, expect, 428))
+
+    def test_429(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Var d:Float = a.c(1,2);
+                                a.d();
+                                Var e:String = a.d();
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: CallExpr(Id(a),Id(d),[])"
+        self.assertTrue(TestChecker.test(input, expect, 429))
 
