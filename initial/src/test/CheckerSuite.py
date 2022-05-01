@@ -513,6 +513,21 @@ class CheckerSuite(unittest.TestCase):
                             }
                         }"""
         expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(a),IntType,FloatLit(1.2))"
+        self.assertTrue(TestChecker.test(input, expect, 433))
+
+    def test_434(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Val a : Float = -(1.2 +1);
+                                Val b : Float = -(1 + 1);
+                                Val c : Boolean = !!((1>2)&&(True || ("abc"==."cef")));
+                                Val d :String = ("abc" +. "def")+."ghi";
+                                Val e :String = True==1;
+                            }
+                        }"""
+        expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(e),StringType,BinaryOp(==,BooleanLit(True),IntLit(1)))"
         self.assertTrue(TestChecker.test(input, expect, 434))
 
     def test_435(self):
@@ -555,4 +570,65 @@ class CheckerSuite(unittest.TestCase):
                         }"""
         expect = "Type Mismatch In Statement: Call(Id(a),Id(d),[IntLit(1),IntLit(2),IntLit(3)])"
         self.assertTrue(TestChecker.test(input, expect, 436))
+
+    def test_437(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Val d:Float = a.c(1,2);
+                                a.d(1+2,2--2.0,"a"+."bcd");
+                                a.c(1,2);
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: Call(Id(a),Id(c),[IntLit(1),IntLit(2)])"
+        self.assertTrue(TestChecker.test(input, expect, 437))
+
+    def test_438(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Val d:Float = a.c(1,2);
+                                a.d(1+2,2--2.0,"a"==."bcd");
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: Call(Id(a),Id(d),[BinaryOp(+,IntLit(1),IntLit(2)),BinaryOp(-,IntLit(2),UnaryOp(-,FloatLit(2.0))),BinaryOp(==.,StringLit(a),StringLit(bcd))])"
+        self.assertTrue(TestChecker.test(input, expect, 438))
+
+    def test_439(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Val d:Float = a.c(1,2);
+                                a.d(1+2,2--2.0,("a"==."bcd")+1);
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: BinaryOp(+,BinaryOp(==.,StringLit(a),StringLit(bcd)),IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 439))
 

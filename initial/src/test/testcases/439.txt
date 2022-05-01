@@ -4,12 +4,12 @@
                             c(g:Int; h:Float){
                                 Return 1;
                             }
-                            d(){}
+                            d(x:Int; y:Float; z:String){}
                         }
                         Class C{
                             e(){
                                 Var a:B;
                                 Val d:Float = a.c(1,2);
-                                Val e:String = a.d(1,2);
+                                a.d(1+2,2--2.0,("a"==."bcd")+1);
                             }
                         }

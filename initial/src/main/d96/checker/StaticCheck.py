@@ -108,7 +108,7 @@ class StaticChecker(BaseVisitor,Utils):
     def visitMethodDecl(self,ast: MethodDecl, c_localBound):
         c, localBound = c_localBound
         name = self.visit(ast.name, (c[localBound:],Method()))
-        mtype = MType([], None)
+        mtype = MType([], VoidType())
         c.append(Symbol(name, mtype, isClassMember=True))
         localBound = len(c)
         for param in ast.param:
@@ -117,7 +117,7 @@ class StaticChecker(BaseVisitor,Utils):
         thisMethod = list(filter(lambda x: x.name == ast.name.name, c))[0]
         thisMethod.scope = (localBound, len(c))
         thisMethod.mtype.partype = [param.varType for param in ast.param]
-        thisMethod.mtype.rettype = self.returnTypeStack.pop() if len(self.returnTypeStack) != 0 else None
+        thisMethod.mtype.rettype = self.returnTypeStack.pop() if len(self.returnTypeStack) != 0 else VoidType()
         return
 
     def visitVarDecl(self,ast: VarDecl, c_localBound_flag):
@@ -266,7 +266,7 @@ class StaticChecker(BaseVisitor,Utils):
             classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
             upperBound, lowerBound = classObject.scope
             methodObject = findingMemArrObjectRecursively(c, classObject.name, False)[-1]
-            if methodObject.mtype.rettype is not None:
+            if type(methodObject.mtype.rettype) is not VoidType:
                 raise TypeMismatchInStatement(ast)
             typeDeclList = [type(x) for x in methodObject.mtype.partype]
             typeAssignList = [type(self.visit(x, c)) for x in ast.param]
@@ -288,7 +288,7 @@ class StaticChecker(BaseVisitor,Utils):
             classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
             upperBound, lowerBound = classObject.scope
             methodObject = list(filter(lambda x: x.name == ast.method.name and type(x.mtype) == MType, c[upperBound:lowerBound]))[0]
-            if methodObject.mtype.rettype is None:
+            if type(methodObject.mtype.rettype) is VoidType:
                 raise TypeMismatchInExpression(ast)
             typeDeclList = [type(x) for x in methodObject.mtype.partype]
             typeAssignList = [type(self.visit(x, c)) for x in ast.param]

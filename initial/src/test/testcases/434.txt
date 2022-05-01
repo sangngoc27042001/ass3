@@ -1,6 +1,10 @@
 
                         Class C{
                             e(){
-                                Val a : Int = 1.2;
+                                Val a : Float = -(1.2 +1);
+                                Val b : Float = -(1 + 1);
+                                Val c : Boolean = !!((1>2)&&(True || ("abc"==."cef")));
+                                Val d :String = ("abc" +. "def")+."ghi";
+                                Val e :String = True==1;
                             }
                         }
