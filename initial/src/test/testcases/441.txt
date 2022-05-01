@@ -1,0 +1,17 @@
+
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class A:B{}
+                        Class C{
+                            e(){
+                                Var x:B = New B();
+                                x = New A();
+                                Var y:A = New A();
+                                y = New B();
+                            }
+                        }

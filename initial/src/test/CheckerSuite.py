@@ -632,3 +632,45 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Expression: BinaryOp(+,BinaryOp(==.,StringLit(a),StringLit(bcd)),IntLit(1))"
         self.assertTrue(TestChecker.test(input, expect, 439))
 
+    def test_440(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class A{}
+                        Class C{
+                            e(){
+                                Var a:B = New B();
+                                a = New A();
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: AssignStmt(Id(a),NewExpr(Id(A),[]))"
+        self.assertTrue(TestChecker.test(input, expect, 440))
+
+    def test_341(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class A:B{}
+                        Class C{
+                            e(){
+                                Var x:B = New B();
+                                x = New A();
+                                Var y:A = New A();
+                                y = New B();
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: AssignStmt(Id(y),NewExpr(Id(B),[]))"
+        self.assertTrue(TestChecker.test(input, expect, 441))
+
