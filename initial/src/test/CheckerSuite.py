@@ -652,7 +652,7 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Statement: AssignStmt(Id(a),NewExpr(Id(A),[]))"
         self.assertTrue(TestChecker.test(input, expect, 440))
 
-    def test_341(self):
+    def test_441(self):
         """Simple program: int main() {} """
         input = """
                         Class B{
@@ -673,4 +673,18 @@ class CheckerSuite(unittest.TestCase):
                         }"""
         expect = "Type Mismatch In Statement: AssignStmt(Id(y),NewExpr(Id(B),[]))"
         self.assertTrue(TestChecker.test(input, expect, 441))
+
+    def test_442(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Val a:Int = 1;
+                                Val b:Float = 1;
+                                Val c:Float = a+b;
+                                Val d:Int = a+b;
+                            }
+                        }"""
+        expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(d),IntType,BinaryOp(+,Id(a),Id(b)))"
+        self.assertTrue(TestChecker.test(input, expect, 442))
 
