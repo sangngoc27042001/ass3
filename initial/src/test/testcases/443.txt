@@ -1,0 +1,9 @@
+
+                        Class C{
+                            e(){
+                                Var a:Int = 1;
+                                Var b:Float = 1;
+                                Var c:Float = a+b;
+                                Var d:Int = a+b;
+                            }
+                        }

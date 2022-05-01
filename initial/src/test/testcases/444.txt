@@ -1,0 +1,17 @@
+
+                        Class C{
+                            e(){
+                                Var a:Int = 1;
+                                Var b:Int = 1;
+                                If (True){
+                                    Var a:Int = 2;
+                                }
+                                Elseif(True){
+                                    Var a:Int = 2;
+                                }
+                                Else{
+                                    Var a:Int = 2;
+                                }
+                                Var b:Int = 2 ;
+                            }
+                        }

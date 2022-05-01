@@ -1,0 +1,9 @@
+
+                        Class C{
+                            e(){
+                                Val a:Int = 1;
+                                Val b:Float = 1;
+                                Val c:Float = a+b;
+                                Val d:Int = a+b;
+                            }
+                        }

@@ -688,3 +688,101 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(d),IntType,BinaryOp(+,Id(a),Id(b)))"
         self.assertTrue(TestChecker.test(input, expect, 442))
 
+    def test_443(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 1;
+                                Var b:Float = 1;
+                                Var c:Float = a+b;
+                                Var d:Int = a+b;
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: VarDecl(Id(d),IntType,BinaryOp(+,Id(a),Id(b)))"
+        self.assertTrue(TestChecker.test(input, expect, 443))
+
+    def test_444(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 1;
+                                Var b:Int = 1;
+                                If (True){
+                                    Var a:Int = 2;
+                                }
+                                Elseif(True){
+                                    Var a:Int = 2;
+                                }
+                                Else{
+                                    Var a:Int = 2;
+                                }
+                                Var b:Int = 2 ;
+                            }
+                        }"""
+        expect = "Redeclared Variable: b"
+        self.assertTrue(TestChecker.test(input, expect, 444))
+
+    def test_445(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 1;
+                                Var b:Int = 1;
+                                Var i:Int = 0;
+                                Foreach(i In 1 .. 10 By 1){
+                                    Var a:Int = 1;
+                                    Break;
+                                    If (True){
+                                        Var a:Int = 1;
+                                        Continue;
+                                    }
+                                }
+                                Var b:Int = 2 ;
+                            }
+                        }"""
+        expect = "Redeclared Variable: b"
+        self.assertTrue(TestChecker.test(input, expect, 445))
+
+    def test_446(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var i:Int = 0;
+                                Foreach(i In 1 .. 10 By 1){
+                                    Var a:Int = 1;
+                                    Break;
+                                    If (True){
+                                        Var a:Int = 1;
+                                        Continue;
+                                    }
+                                }
+                                Break;
+                            }
+                        }"""
+        expect = "Break Not In Loop"
+        self.assertTrue(TestChecker.test(input, expect, 446))
+
+    def test_447(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var i:Int = 0;
+                                Foreach(i In 1 .. 10 By 1){
+                                    Var a:Int = 1;
+                                    Break;
+                                    If (True){
+                                        Var a:Int = 1;
+                                        Continue;
+                                    }
+                                }
+                                Continue;
+                            }
+                        }"""
+        expect = "Continue Not In Loop"
+        self.assertTrue(TestChecker.test(input, expect, 447))
+
