@@ -74,14 +74,8 @@ class StaticChecker(BaseVisitor):
     def visitId(self, ast: Id, c):
         global bigProgram
         if type(c) is not tuple:
-            bigProgramTemp = bigProgram.copy()
-            while True:
-                symBolTemp = bigProgramTemp.pop()
-                if isinstance(symBolTemp.mtype, (BlockFlag, Ctype, MType)):
-                    raise Undeclared (Variable(), ast.name)
-                elif symBolTemp.name == ast.name:
-                    break
-            return symBolTemp.mtype
+            idObject = list(filter(lambda x: x.name == ast.name, bigProgram))[-1]
+            return idObject.mtype
         if c[1] == 'CHECK_UNDECLARED_ATTRIBUTE':
             object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
             attributeInClass = findingMemArrRecursively(c[0], object.mtype.classname.name)
@@ -349,14 +343,6 @@ class StaticChecker(BaseVisitor):
                 raise Undeclared(Attribute(), ast.fieldname.name)
             attributeObject = attributeObject[-1]
             return attributeObject.mtype
-        elif type(ast.obj) == SelfLiteral:
-            classObject = list(filter(lambda x: type(x.mtype) is Ctype, c))[-1]
-            upperBound = c.index(classObject) + 1
-            attributeList = [x for x in c[upperBound:] if x.isClassMember and type(x.mtype) != MType]
-            if ast.fieldname.name not in [x.name for x in attributeList]:
-                raise Undeclared(Attribute(), ast.fieldname.name)
-            attributeObject = list(filter(lambda x: x.name == ast.fieldname.name, attributeList))[-1]
-            return attributeObject.mtype
 
     def visitIf(self, ast: If, c):
         thisIf = Symbol('IF', IfFlag())
@@ -447,7 +433,7 @@ def checkIllegalConstantExpression(ast:Expr):
         return checkIllegalConstantExpression(ast.left) and checkIllegalConstantExpression(ast.right)
     elif isinstance(ast, UnaryOp):
         return checkIllegalConstantExpression(ast.body)
-    elif isinstance(ast, (IntLiteral, FloatLiteral, StringLiteral, BooleanLiteral, ArrayLiteral, NewExpr, SelfLiteral)):
+    elif isinstance(ast, (IntLiteral, FloatLiteral, StringLiteral, BooleanLiteral, ArrayLiteral, NewExpr)):
         return True
     elif isinstance(ast, Id):
         idObject = list(filter(lambda x: x.name == ast.name, bigProgram))[-1]

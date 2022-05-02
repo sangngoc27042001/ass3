@@ -828,24 +828,3 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Expression: BinaryOp(+,Id(a),StringLit(abc))"
         self.assertTrue(TestChecker.test(input, expect, 450))
 
-    def test_451(self):
-        """Simple program: int main() {} """
-        input = """
-                        Class C{
-                            e(){
-                                Var a:Int = 0;
-                                Val b:Int = 1;
-                                Val c:Float = b+1;
-                            }
-                        }
-                         Class Car {
-
-                            Var a : Int = 10;
-                            foo() {
-                                Var x : Int = Self.a;
-                                Var y : Int = a;
-                            }
-                        }"""
-        expect = "Undeclared Variable: a"
-        self.assertTrue(TestChecker.test(input, expect, 451))
-
