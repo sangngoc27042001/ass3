@@ -497,7 +497,7 @@ class CheckerSuite(unittest.TestCase):
                         }
                         Class C{
                             e(){
-                                Var a:B;
+                                Val a:B = New B();
                                 Val d:Float = a.c(1,2);
                                 Val e:String = a.c(1,2);
                             }
@@ -542,7 +542,7 @@ class CheckerSuite(unittest.TestCase):
                         }
                         Class C{
                             e(){
-                                Var a:B;
+                                Val a:B = New B();
                                 Val d:Float = a.c(1,2);
                                 Val e:String = a.d(1,2);
                             }
@@ -562,7 +562,7 @@ class CheckerSuite(unittest.TestCase):
                         }
                         Class C{
                             e(){
-                                Var a:B;
+                                Val a:B = New B();
                                 Val d:Float = a.c(1,2);
                                 a.d(1,2,"a");
                                 a.d(1,2,3);
@@ -583,7 +583,7 @@ class CheckerSuite(unittest.TestCase):
                         }
                         Class C{
                             e(){
-                                Var a:B;
+                                Val a:B = New B();
                                 Val d:Float = a.c(1,2);
                                 a.d(1+2,2--2.0,"a"+."bcd");
                                 a.c(1,2);
@@ -604,7 +604,7 @@ class CheckerSuite(unittest.TestCase):
                         }
                         Class C{
                             e(){
-                                Var a:B;
+                                Val a:B = New B();
                                 Val d:Float = a.c(1,2);
                                 a.d(1+2,2--2.0,"a"==."bcd");
                             }
@@ -624,7 +624,7 @@ class CheckerSuite(unittest.TestCase):
                         }
                         Class C{
                             e(){
-                                Var a:B;
+                                Val a:B = New B();
                                 Val d:Float = a.c(1,2);
                                 a.d(1+2,2--2.0,("a"==."bcd")+1);
                             }
@@ -785,4 +785,46 @@ class CheckerSuite(unittest.TestCase):
                         }"""
         expect = "Continue Not In Loop"
         self.assertTrue(TestChecker.test(input, expect, 447))
+
+    def test_448(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 0;
+                                Val b:Int = 1;
+                                Val c:Float = b+1;
+                                Val d:Float = a+1;
+                            }
+                        }"""
+        expect = "Illegal Constant Expression: BinaryOp(+,Id(a),IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 448))
+
+    def test_449(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 0;
+                                Val b:Int = 1;
+                                Val c:Float = b+1;
+                                Val d:Float = a + "abc";
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: BinaryOp(+,Id(a),StringLit(abc))"
+        self.assertTrue(TestChecker.test(input, expect, 449))
+
+    def test_450(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 0;
+                                Val b:Int = 1;
+                                Val c:Float = b+1;
+                                Val d:Float = a + "abc";
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: BinaryOp(+,Id(a),StringLit(abc))"
+        self.assertTrue(TestChecker.test(input, expect, 450))
 

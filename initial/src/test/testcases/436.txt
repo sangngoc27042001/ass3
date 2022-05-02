@@ -8,7 +8,7 @@
                         }
                         Class C{
                             e(){
-                                Var a:B;
+                                Val a:B = New B();
                                 Val d:Float = a.c(1,2);
                                 a.d(1,2,"a");
                                 a.d(1,2,3);

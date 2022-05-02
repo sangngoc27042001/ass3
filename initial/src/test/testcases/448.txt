@@ -1,0 +1,9 @@
+
+                        Class C{
+                            e(){
+                                Var a:Int = 0;
+                                Val b:Int = 1;
+                                Val c:Float = b+1;
+                                Val d:Float = a+1;
+                            }
+                        }

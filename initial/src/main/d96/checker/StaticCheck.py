@@ -10,6 +10,15 @@ from StaticError import *
 class Ctype:
     pass
 
+class BlockFlag:
+    pass
+
+class IfFlag:
+    pass
+
+class ForFlag:
+    pass
+
 class MType:
     def __init__(self,partype,rettype):
         self.partype = partype
@@ -26,6 +35,8 @@ class Symbol:
         self.inherit = inherit # String, name of a class
         self.immutable = immutable # True if Symbol is a constant, otherwise, False
 
+bigProgram = []
+
 class StaticChecker(BaseVisitor,Utils):
 
     global_envi = [
@@ -41,7 +52,9 @@ class StaticChecker(BaseVisitor,Utils):
  
     
     def check(self):
-        return self.visit(self.ast,[])
+        global bigProgram
+        bigProgram = []
+        return self.visit(self.ast, bigProgram)
 
     def visitProgram(self, ast: Program, c):
         for x in ast.decl:
@@ -60,6 +73,10 @@ class StaticChecker(BaseVisitor,Utils):
         return
 
     def visitId(self, ast: Id, c):
+        global bigProgram
+        if type(c) is not tuple:
+            idObject = list(filter(lambda x: x.name == ast.name, bigProgram))[-1]
+            return idObject.mtype
         if c[1] == 'CHECK_UNDECLARED_ATTRIBUTE':
             object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
             attributeInClass = findingMemArrRecursively(c[0], object.mtype.classname.name)
@@ -130,9 +147,9 @@ class StaticChecker(BaseVisitor,Utils):
 
         if not((value is None) or ( isinstance(value, NullLiteral))):
             typeRHS = self.visit(ast.varInit, c)
-            if not checkCoerceType(type(ast.varType), type(typeRHS)):
+            if not checkCoerceType(ast.varType, typeRHS):
                 raise TypeMismatchInStatement(ast)
-        c.append(Symbol(name, mtype, value, Instance()))
+        bigProgram.append(Symbol(name, mtype, value, Instance()))
         return
 
     def visitConstDecl(self,ast: ConstDecl, c_localBound_flag):
@@ -145,13 +162,19 @@ class StaticChecker(BaseVisitor,Utils):
 
         if not((value is None) or ( isinstance(value, NullLiteral))):
             typeRHS = self.visit(ast.value, c)
-            if not checkCoerceType(type(ast.constType), type(typeRHS)):
+            if not checkCoerceType(ast.constType, typeRHS):
                 raise TypeMismatchInConstant(ast)
+
+        if not checkIllegalConstantExpression(value):
+            raise IllegalConstantExpression(value)
         c.append(Symbol(name, mtype, value, Instance(), immutable=True))
         return
 
     def visitBlock(self, ast: Block, c_localBound):
         c, localBound = c_localBound
+        thisBlock = Symbol('BLOCK', BlockFlag())
+        bigProgram.append(thisBlock)
+        upperBound = len(c)
         for inst in ast.inst:
             if type(inst) in [VarDecl, ConstDecl]:
                 self.visit(inst, (c, localBound, 'INST'))
@@ -163,6 +186,13 @@ class StaticChecker(BaseVisitor,Utils):
                 self.visit(inst, (c, localBound))
             elif type(inst) in [Return]:
                 self.visit(inst, c)
+            elif type(inst) in [Break, Continue]:
+                self.visit(inst, c)
+            elif type(inst) in [If]:
+                self.visit(inst, c)
+            elif type(inst) in [For]:
+                self.visit(inst, c)
+        thisBlock.scope = (upperBound, len(c))
         return
 
     def visitAssign(self, ast: Assign, c_localBound):
@@ -255,6 +285,9 @@ class StaticChecker(BaseVisitor,Utils):
     def visitNullLiteral(self, ast: NullLiteral, c):
         return NullLiteral()
 
+    def visitNewExpr(self, ast: NewExpr, c):
+        return ClassType(Id(ast.classname.name))
+
 
     def visitCallStmt(self, ast: CallStmt, c_localBound):
         c, localBound = c_localBound
@@ -268,8 +301,8 @@ class StaticChecker(BaseVisitor,Utils):
             methodObject = findingMemArrObjectRecursively(c, classObject.name, False)[-1]
             if type(methodObject.mtype.rettype) is not VoidType:
                 raise TypeMismatchInStatement(ast)
-            typeDeclList = [type(x) for x in methodObject.mtype.partype]
-            typeAssignList = [type(self.visit(x, c)) for x in ast.param]
+            typeDeclList = [x for x in methodObject.mtype.partype]
+            typeAssignList = [self.visit(x, c) for x in ast.param]
             if len(typeDeclList) != len(typeAssignList):
                 raise TypeMismatchInStatement(ast)
             for (typeDecl, typeAssign) in zip(typeDeclList, typeAssignList):
@@ -290,8 +323,8 @@ class StaticChecker(BaseVisitor,Utils):
             methodObject = list(filter(lambda x: x.name == ast.method.name and type(x.mtype) == MType, c[upperBound:lowerBound]))[0]
             if type(methodObject.mtype.rettype) is VoidType:
                 raise TypeMismatchInExpression(ast)
-            typeDeclList = [type(x) for x in methodObject.mtype.partype]
-            typeAssignList = [type(self.visit(x, c)) for x in ast.param]
+            typeDeclList = [x for x in methodObject.mtype.partype]
+            typeAssignList = [self.visit(x, c) for x in ast.param]
             if len(typeDeclList) != len(typeAssignList):
                 raise TypeMismatchInExpression(ast)
             for (typeDecl, typeAssign) in zip(typeDeclList,typeAssignList):
@@ -312,6 +345,46 @@ class StaticChecker(BaseVisitor,Utils):
             attributeObject = attributeObject[-1]
             return attributeObject.mtype
 
+    def visitIf(self, ast: If, c):
+        thisIf = Symbol('IF', IfFlag())
+        bigProgram.append(thisIf)
+        upperBound = len(c)
+        self.visit(ast.expr,c)
+        self.visit(ast.thenStmt, (c, upperBound))
+        self.visit(ast.elseStmt, (c, upperBound)) if ast.elseStmt is not None else None
+        thisIf.scope = (upperBound, len(c))
+
+    def visitFor(self, ast: For, c):
+        thisFor = Symbol('FOR', ForFlag())
+        bigProgram.append(thisFor)
+        upperBound = len(c)
+        expr1Type = self.visit(ast.expr1, bigProgram)
+        expr2Type = self.visit(ast.expr2, bigProgram)
+        if not (checkCoerceType(expr1Type, IntType()) and checkCoerceType(expr2Type,IntType())):
+            raise TypeMismatchInStatement(ast)
+        expr3Type = self.visit(ast.expr3, bigProgram) if ast.expr3 is not None else None
+        self.visit(ast.loop, (bigProgram, upperBound))
+        thisFor.scope = (upperBound, len(c))
+
+    def visitBreak(self, ast: Break, c):
+        bigProgramTemp = bigProgram.copy()
+        while True:
+            symBolTemp = bigProgramTemp.pop()
+            if type(symBolTemp.mtype) is ForFlag:
+                if symBolTemp.scope is None:
+                    break
+            if isinstance(symBolTemp.mtype, (Ctype, MType)):
+                raise MustInLoop(ast)
+
+    def visitContinue(self, ast: Continue, c):
+        bigProgramTemp = bigProgram.copy()
+        while True:
+            symBolTemp = bigProgramTemp.pop()
+            if type(symBolTemp.mtype) is ForFlag:
+                if symBolTemp.scope is None:
+                    break
+            if isinstance(symBolTemp.mtype, (Ctype, MType)):
+                raise MustInLoop(ast)
 
 #HELP Function
 def findingMemArrRecursively(c, classname, attribute=True):
@@ -339,10 +412,40 @@ def findingMemArrObjectRecursively(c, classname, attribute=True):
         return arrAttributeTemp + findingMemArrObjectRecursively(c, classObject.inherit, attribute)
 
 def checkCoerceType(typeDecl, typeAssign):
-    if typeDecl is FloatType:
-        if typeAssign in [FloatType, IntType]:
+    global bigProgram
+    if type(typeDecl) is FloatType:
+        if type(typeAssign) in [FloatType, IntType]:
             return True
-    return typeDecl == typeAssign
+    elif type(typeDecl) == ClassType and type(typeAssign) == ClassType:
+        if typeDecl.classname.name == typeAssign.classname.name:
+            return True
+        classObjectDecl = list(filter(lambda x: x.name == typeAssign.classname.name and type(x.mtype) == Ctype, bigProgram))[0]
+        if classObjectDecl.inherit is None:
+            return False
+        else:
+            return checkCoerceType(typeDecl, ClassType(Id(classObjectDecl.inherit)))
+        pass
+    return type(typeDecl) == type(typeAssign)
+
+def checkIllegalConstantExpression(ast:Expr):
+    if ast is None:
+        return False
+    if isinstance(ast, BinaryOp):
+        return checkIllegalConstantExpression(ast.left) and checkIllegalConstantExpression(ast.right)
+    elif isinstance(ast, UnaryOp):
+        return checkIllegalConstantExpression(ast.body)
+    elif isinstance(ast, (IntLiteral, FloatLiteral, StringLiteral, BooleanLiteral, ArrayLiteral, NewExpr)):
+        return True
+    elif isinstance(ast, Id):
+        idObject = list(filter(lambda x: x.name == ast.name, bigProgram))[-1]
+        if not idObject.immutable:
+            return False
+        return True
+    elif isinstance(ast, (FieldAccess, CallExpr)):
+        return checkIllegalConstantExpression(ast.obj)
+    return False
+
+
 
 
     
