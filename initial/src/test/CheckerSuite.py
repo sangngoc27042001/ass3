@@ -1002,4 +1002,74 @@ class CheckerSuite(unittest.TestCase):
         expect = "Illegal Member Access: CallExpr(Id(b),Id($a),[])"
         self.assertTrue(TestChecker.test(input, expect, 459))
 
+    def test_461(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        } """
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 461))
+
+    def test_462(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        } 
+                        Class Program{
+                            c(){
+                                Return 1;
+                            }
+                        }"""
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 462))
+
+    def test_463(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        } 
+                        Class Program{
+                            $main(){
+                                Return 1;
+                            }
+                        }"""
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 463))
+
+    def test_464(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        } 
+                        Class Program{
+                            $main(a:Int){
+                            }
+                        }"""
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 464))
+
 

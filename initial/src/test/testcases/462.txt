@@ -1,0 +1,14 @@
+         
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        } 
+                        Class Program{
+                            c(){
+                                Return 1;
+                            }
+                        }
