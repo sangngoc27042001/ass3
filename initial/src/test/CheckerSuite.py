@@ -1072,4 +1072,21 @@ class CheckerSuite(unittest.TestCase):
         expect = "No Entry Point"
         self.assertTrue(TestChecker.test(input, expect, 464))
 
+    def test_399(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        } 
+                        Class Program{
+                            main(){}
+                        }"""
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 465))
+
 
