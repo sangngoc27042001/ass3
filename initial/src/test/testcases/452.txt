@@ -1,0 +1,8 @@
+
+                         Class Car {
+                            foo() {
+                                Var a:Array[Int,2];
+                                a = Array(1,2);
+                                a = Array(1,2.3);
+                            }
+                        }

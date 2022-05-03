@@ -846,6 +846,160 @@ class CheckerSuite(unittest.TestCase):
                                 Var y : Int = a;
                             }
                         }"""
-        expect = "Undeclared Variable: a"
+        expect = "Undeclared Identifier: a"
         self.assertTrue(TestChecker.test(input, expect, 451))
+
+    def test_452(self):
+        """Simple program: int main() {} """
+        input = """
+                         Class Car {
+                            foo() {
+                                Var a:Array[Int,2];
+                                a = Array(1,2);
+                                a = Array(1,2.3);
+                            }
+                        }"""
+        expect = "Illegal Array Literal: [IntLit(1),FloatLit(2.3)]"
+        self.assertTrue(TestChecker.test(input, expect, 452))
+
+    def test_453(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class B{
+                        func(){
+                            count.foo();
+                        }
+                        }"""
+        expect = "Undeclared Identifier: count"
+        self.assertTrue(TestChecker.test(input, expect, 453))
+
+    def test_454(self):
+        """Simple program: int main() {} """
+        input = """
+                        Class A{
+                            Var $a:Int = 5;
+                            Var b:Int = 4;
+                        }         
+                        Class B{
+                        func(){
+                            Var b:Int = A::$a;
+                            b = count.foo();
+                        }
+                        }"""
+        expect = "Undeclared Identifier: count"
+        self.assertTrue(TestChecker.test(input, expect, 454))
+
+    def test_455(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            Var $a:Int = 5;
+                            Var b:Int = 4;
+                        }         
+                        Class B{
+                        func(){
+                            Var b:Int = A::$a;
+                            b = A.b;
+                        }
+                        }"""
+        expect = "Illegal Member Access: FieldAccess(Id(A),Id(b))"
+        self.assertTrue(TestChecker.test(input, expect, 455))
+
+    def test_456(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            Var $a:Int = 5;
+                            Var b:Int = 4;
+                        }         
+                        Class B{
+                        func(){
+                            Var b:A = New A();
+                            Var c:Int = b.b;
+                            Var d:Int = b::$a;
+                        }
+                        }"""
+        expect = "Illegal Member Access: FieldAccess(Id(b),Id($a))"
+        self.assertTrue(TestChecker.test(input, expect, 456))
+
+    def test_457(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            $a(){}
+                            b(){}
+                        }         
+                        Class B{
+                        func(){
+                            A::$a();
+                            Var b:A = New A();
+                            b.b();
+                            b::$a();
+                        }
+                        }"""
+        expect = "Illegal Member Access: Call(Id(b),Id($a),[])"
+        self.assertTrue(TestChecker.test(input, expect, 457))
+
+    def test_458(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            $a(){}
+                            b(){}
+                        }         
+                        Class B{
+                        func(){
+                            A::$a();
+                            Var b:A = New A();
+                            b.b();
+                            A.b();
+                        }
+                        }"""
+        expect = "Illegal Member Access: Call(Id(A),Id(b),[])"
+        self.assertTrue(TestChecker.test(input, expect, 458))
+
+    def test_459(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        }         
+                        Class B{
+                        func(){
+                            Var b:A = New A();
+                            Var c:Int = A::$a();
+                            c = b.b();
+                            c = A.b();
+                        }
+                        }"""
+        expect = "Illegal Member Access: CallExpr(Id(A),Id(b),[])"
+        self.assertTrue(TestChecker.test(input, expect, 459))
+
+    def test_460(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        }         
+                        Class B{
+                        func(){
+                            Var b:A = New A();
+                            Var c:Int = A::$a();
+                            c = b.b();
+                            c = b::$a();
+                        }
+                        }"""
+        expect = "Illegal Member Access: CallExpr(Id(b),Id($a),[])"
+        self.assertTrue(TestChecker.test(input, expect, 459))
+
 

@@ -1,0 +1,6 @@
+         
+                        Class B{
+                        func(){
+                            count.foo();
+                        }
+                        }

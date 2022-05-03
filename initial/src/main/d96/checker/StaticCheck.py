@@ -78,16 +78,30 @@ class StaticChecker(BaseVisitor):
             while True:
                 symBolTemp = bigProgramTemp.pop()
                 if isinstance(symBolTemp.mtype, (BlockFlag, Ctype, MType)):
-                    raise Undeclared (Variable(), ast.name)
+                    raise Undeclared (Identifier(), ast.name)
                 elif symBolTemp.name == ast.name:
                     break
             return symBolTemp.mtype
+
+        if c[1] == 'CHECK_ILLEGAL_MEMBER_ACCESS':
+            _, _, ast2 = c
+            bigProgramTemp = bigProgram.copy()
+            while True:
+                symBolTemp = bigProgramTemp.pop()
+                if symBolTemp.name == ast.name:
+                    return 'VAR'
+                if isinstance(symBolTemp.mtype, (Ctype, BlockFlag)):
+                    if ast.name in [x.name for x in bigProgram if type(x.mtype) is Ctype]:
+                        return 'CLASS'
+                    raise Undeclared(Identifier(), ast.name)
+
         if c[1] == 'CHECK_UNDECLARED_ATTRIBUTE':
             object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
             attributeInClass = findingMemArrRecursively(c[0], object.mtype.classname.name)
             if ast.name not in attributeInClass:
                 raise Undeclared(c[2], ast.name)
             return ast.name
+
         if c[1] =='CHECK_CANNOT_ASSIGN_TO_CONSTANT':
             object = list(filter(lambda x: x.name == ast.name, c[0]))[-1]
             if object.immutable:
@@ -95,7 +109,10 @@ class StaticChecker(BaseVisitor):
             return ast.name
 
         if c[1] == 'CHECK_UNDECLARED_METHOD':
-            object = list(filter(lambda x: x.name == c[3], c[0]))[-1]
+            object = list(filter(lambda x: x.name == c[3], c[0]))
+            if len(object)==0:
+                raise Undeclared(c[2], ast.name)
+            object = object[-1]
             methodInClass = findingMemArrRecursively(c[0], object.mtype.classname.name, False)
             if ast.name not in methodInClass:
                 raise Undeclared(c[2], ast.name)
@@ -290,6 +307,15 @@ class StaticChecker(BaseVisitor):
     def visitNullLiteral(self, ast: NullLiteral, c):
         return NullLiteral()
 
+    def visitArrayLiteral(self, ast: ArrayLiteral, c):
+        if len(ast.value) == 0:
+            return ArrayType()
+        temp = self.visit(ast.value[0],c)
+        for ele in ast.value:
+            if type(temp) is not type(self.visit(ele,c)):
+                raise IllegalArrayLiteral(ast)
+        return ArrayType(temp, len(ast.value))
+
     def visitNewExpr(self, ast: NewExpr, c):
         return ClassType(Id(ast.classname.name))
 
@@ -297,11 +323,20 @@ class StaticChecker(BaseVisitor):
     def visitCallStmt(self, ast: CallStmt, c_localBound):
         c, localBound = c_localBound
         if type(ast.obj) == Id:
-            self.visit(ast.method, (c, 'CHECK_UNDECLARED_METHOD', Method(), ast.obj.name))
-            object = list(filter(lambda x: x.name == ast.obj.name, c))[-1]
-            if type(object.mtype) != ClassType:
-                raise TypeMismatchInStatement(ast)
-            classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
+            objClassVar = self.visit(ast.obj, (bigProgram, 'CHECK_ILLEGAL_MEMBER_ACCESS', ast))
+            if objClassVar == 'CLASS':
+                if ast.method.name[0] != '$':
+                    raise IllegalMemberAccess(ast)
+                classObject = list(filter(lambda x: x.name == ast.obj.name and type(x.mtype) == Ctype, c))[0]
+            else:
+                if ast.method.name[0] == '$':
+                    raise IllegalMemberAccess(ast)
+                self.visit(ast.method, (c, 'CHECK_UNDECLARED_METHOD', Method(), ast.obj.name))
+                object = list(filter(lambda x: x.name == ast.obj.name, c))[-1]
+                if type(object.mtype) != ClassType:
+                    raise TypeMismatchInExpression(ast)
+                classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
+
             upperBound, lowerBound = classObject.scope
             methodObject = findingMemArrObjectRecursively(c, classObject.name, False)[-1]
             if type(methodObject.mtype.rettype) is not VoidType:
@@ -320,10 +355,21 @@ class StaticChecker(BaseVisitor):
 
     def visitCallExpr(self, ast:CallExpr, c):
         if type(ast.obj) == Id:
-            object = list(filter(lambda x: x.name == ast.obj.name, c))[-1]
-            if type(object.mtype) != ClassType:
-                raise TypeMismatchInExpression(ast)
-            classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
+            objClassVar = self.visit(ast.obj, (bigProgram, 'CHECK_ILLEGAL_MEMBER_ACCESS', ast))
+
+            if objClassVar == 'CLASS':
+                if ast.method.name[0] != '$':
+                    raise IllegalMemberAccess(ast)
+                classObject = list(filter(lambda x: x.name == ast.obj.name and type(x.mtype) == Ctype, c))[0]
+            else:
+                if ast.method.name[0] == '$':
+                    raise IllegalMemberAccess(ast)
+                self.visit(ast.method, (c, 'CHECK_UNDECLARED_METHOD', Method(), ast.obj.name))
+                object = list(filter(lambda x: x.name == ast.obj.name, c))[-1]
+                if type(object.mtype) != ClassType:
+                    raise TypeMismatchInExpression(ast)
+                classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
+
             upperBound, lowerBound = classObject.scope
             methodObject = list(filter(lambda x: x.name == ast.method.name and type(x.mtype) == MType, c[upperBound:lowerBound]))[0]
             if type(methodObject.mtype.rettype) is VoidType:
@@ -336,12 +382,22 @@ class StaticChecker(BaseVisitor):
                 if not checkCoerceType(typeDecl, typeAssign):
                     raise TypeMismatchInExpression(ast)
             return methodObject.mtype.rettype
+
     def visitFieldAccess(self, ast:FieldAccess, c):
+        global bigProgram
         if type(ast.obj) == Id:
-            object = list(filter(lambda x: x.name == ast.obj.name, c))[-1]
-            if type(object.mtype) != ClassType:
-                raise TypeMismatchInExpression(ast)
-            classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
+            objClassVar = self.visit(ast.obj, (bigProgram, 'CHECK_ILLEGAL_MEMBER_ACCESS', ast))
+            if objClassVar == 'CLASS':
+                if ast.fieldname.name[0] != '$':
+                    raise IllegalMemberAccess(ast)
+                classObject = list(filter(lambda x: x.name == ast.obj.name and type(x.mtype) == Ctype, c))[0]
+            else:
+                if ast.fieldname.name[0] == '$':
+                    raise IllegalMemberAccess(ast)
+                object = list(filter(lambda x: x.name == ast.obj.name, c))[-1]
+                if type(object.mtype) != ClassType:
+                    raise TypeMismatchInExpression(ast)
+                classObject = list(filter(lambda x: x.name == object.mtype.classname.name and type(x.mtype) == Ctype, c))[0]
             upperBound, lowerBound = classObject.scope
             attributeObjectList = findingMemArrObjectRecursively(c, classObject.name)
             attributeObject = list(filter(lambda x: x.name == ast.fieldname.name, attributeObjectList))

@@ -1,0 +1,17 @@
+         
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        }         
+                        Class B{
+                        func(){
+                            Var b:A = New A();
+                            Var c:Int = A::$a();
+                            c = b.b();
+                            c = b::$a();
+                        }
+                        }
