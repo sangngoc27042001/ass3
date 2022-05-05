@@ -1,0 +1,10 @@
+         
+                        Class A{
+                        Val y:Int=10;
+                        }
+                        Class B{
+                        Var x:A;
+                        func (){
+                            Val z:Int=Self.x.y;
+                        }
+                        } 

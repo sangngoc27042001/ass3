@@ -1072,7 +1072,7 @@ class CheckerSuite(unittest.TestCase):
         expect = "No Entry Point"
         self.assertTrue(TestChecker.test(input, expect, 464))
 
-    def test_399(self):
+    def test_465(self):
         """Simple program: int main() {} """
         input = """         
                         Class A{
@@ -1088,5 +1088,18 @@ class CheckerSuite(unittest.TestCase):
                         }"""
         expect = "No Entry Point"
         self.assertTrue(TestChecker.test(input, expect, 465))
+
+    def test_399(self):
+        """Simple program: int main() {} """
+        input = """         
+                        Class A{
+                            Var a:Int = 1;
+                            foo(){
+                                Var b:Int = Self.a;
+                                Var c:Int = a;
+                            }
+                        } """
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 466))
 
 

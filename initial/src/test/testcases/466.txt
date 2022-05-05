@@ -1,0 +1,8 @@
+         
+                        Class A{
+                            Var a:Int = 1;
+                            foo(){
+                                Var b:Int = Self.a;
+                                Var c:Int = a;
+                            }
+                        } 

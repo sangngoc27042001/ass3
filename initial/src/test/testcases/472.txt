@@ -1,0 +1,11 @@
+     
+                        Class E {
+                           func() {                        
+                           } 
+                           Constructor(a:Int){
+                           }                       
+                        }                        
+                        Class Test{                        
+                          Var e: E = New E(1);              
+                          Val b: String = New E(1);                                
+                        } 
