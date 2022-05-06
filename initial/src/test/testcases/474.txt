@@ -1,13 +1,14 @@
      
                         Class E {
-                           $func() {                        
+                           $func() { 
+                                Return 1;                       
                            } 
                            Constructor(a:Int){
                            }                       
                         }                        
                         Class Test{ 
                             cak(){                     
-                                E::$func();   
-                                E::$foo();                             
+                                Var a:Int = E::$func();   
+                                Var b:Int = E::$foo();                             
                             }
                         }

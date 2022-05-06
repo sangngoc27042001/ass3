@@ -1,0 +1,14 @@
+     
+                        Class A {
+                           Var a:Int = 1;                      
+                        }                        
+                        Class B{ 
+                            Var $b:A = New A(); 
+                        }
+                        Class C{
+                            foo(){
+                                Var c:B = New B();
+                                Var e:Int = B::$b.a;
+                                Var f:Int = B::$b.g;
+                            }
+                        }

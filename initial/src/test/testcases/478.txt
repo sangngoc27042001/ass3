@@ -1,0 +1,20 @@
+     
+                        Class A {
+                           Var a:Int = 1;
+                           foo(x:Float; y:String){
+                           }                      
+                        }                        
+                        Class B{ 
+                            Var b:A = New A();
+                            foo(){
+                                Return New A();
+                            }
+                        }
+                        Class C{
+                            foo(){
+                                Var c:B = New B();
+                                c.foo().foo(1,"a");
+                                c.b.foo(1.2,"a");
+                                c.b.foo(1,1.2);
+                            }
+                        }

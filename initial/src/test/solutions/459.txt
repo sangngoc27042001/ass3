@@ -1,1 +1,1 @@
-Illegal Member Access: CallExpr(Id(b),Id($a),[])
+Illegal Member Access: CallExpr(Id(A),Id(b),[])
