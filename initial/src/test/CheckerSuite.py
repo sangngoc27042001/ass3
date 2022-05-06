@@ -1463,7 +1463,7 @@ class CheckerSuite(unittest.TestCase):
                                 Return y;
                            }               
                         }                        
-                        Class B{
+                        Class BB{
                             foo2(){
                                 Var e:Float = (New A()).a - 7;
                                 e = A::$fooExp1(1, "a") +2 - -----5;
