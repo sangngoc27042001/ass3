@@ -1365,6 +1365,116 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Statement: Call(FieldAccess(Id(c),Id(b)),Id(foo),[IntLit(1),FloatLit(1.2)])"
         self.assertTrue(TestChecker.test(input, expect, 480))
 
+    def test_481(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           Var a:Int = 1;
+                           fooExp(x:Float; y:String){
+                                Return 1;
+                           }  
+                           fooCall(x:Float; y:String){}                    
+                        }                        
+                        Class B{ 
+                            Var b:A = New A();
+                            foo(){
+                                Return New A();
+                            }
+                            foo2(){
+                                Var e:Int = Self.b.a;
+                                e = Self.b.fooExp(1, "a");
+                                e = Self.foo().a;
+                                e = Self.foo().fooExp(1, "a");
+                                Self.b.fooCall(1, "a");
+                                Self.foo().fooCall(1, "a");
+                                Self.g().fooCall(1, "a");
+                            }
+                        }"""
+        expect = "Undeclared Method: g"
+        self.assertTrue(TestChecker.test(input, expect, 481))
+
+    def test_482(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           Var a:Int = 1;
+                           fooExp(x:Float; y:String){
+                                Return 1;
+                           }  
+                           fooCall(x:Float; y:String){}                    
+                        }                        
+                        Class B{ 
+                            Var b:A = New A();
+                            foo(){
+                                Return New A();
+                            }
+                            foo2(){
+                                Var e:Int = Self.b.a;
+                                e = Self.b.fooExp(1, "a");
+                                e = Self.foo().a;
+                                e = Self.foo().fooExp(1, "a");
+                                Self.b.fooCall(1, "a");
+                                Self.foo().fooCall(1, "a");
+                                Self.g().fooCall(1, "a");
+                            }
+                        }"""
+        expect = "Undeclared Method: g"
+        self.assertTrue(TestChecker.test(input, expect, 482))
+
+    def test_483(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           Var a:Int = 1;
+                           $fooExp1(x:Float; y:String){
+                                Return Self.a;
+                           } 
+                           $fooExp2(x:Float; y:String){
+                                Return x;
+                           }  
+                           $fooExp3(x:Float; y:String){
+                                Return y;
+                           }               
+                        }                        
+                        Class B{
+                            foo2(){
+                                Var e:Float = (New A()).a;
+                                e = A::$fooExp1(1, "a");
+                                e = A::$fooExp2(1, "a");
+                                Var f:String = A::$fooExp3(1, "a");
+                                Var g:Float = A::$fooExp3(1, "a");
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: VarDecl(Id(g),FloatType,CallExpr(Id(A),Id($fooExp3),[IntLit(1),StringLit(a)]))"
+        self.assertTrue(TestChecker.test(input, expect, 483))
+
+    def test_484(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           Var a:Int = 1;
+                           $fooExp1(x:Float; y:String){
+                                Return Self.a;
+                           } 
+                           $fooExp2(x:Float; y:String){
+                                Return x;
+                           }  
+                           $fooExp3(x:Float; y:String){
+                                Return y;
+                           }               
+                        }                        
+                        Class B{
+                            foo2(){
+                                Var e:Float = (New A()).a - 7;
+                                e = A::$fooExp1(1, "a") +2 - -----5;
+                                e = A::$fooExp2(1, "a") + 1;
+                                Var f:String = A::$fooExp3(1, "a") +. "abc";
+                                Var g:String = A::$fooExp3(1, "a") + 1;
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: BinaryOp(+,CallExpr(Id(A),Id($fooExp3),[IntLit(1),StringLit(a)]),IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 484))
+
 
 
 

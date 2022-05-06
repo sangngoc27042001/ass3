@@ -1,0 +1,23 @@
+     
+                        Class A {
+                           Var a:Int = 1;
+                           fooExp(x:Float; y:String){
+                                Return 1;
+                           }  
+                           fooCall(x:Float; y:String){}                    
+                        }                        
+                        Class B{ 
+                            Var b:A = New A();
+                            foo(){
+                                Return New A();
+                            }
+                            foo2(){
+                                Var e:Int = Self.b.a;
+                                e = Self.b.fooExp(1, "a");
+                                e = Self.foo().a;
+                                e = Self.foo().fooExp(1, "a");
+                                Self.b.fooCall(1, "a");
+                                Self.foo().fooCall(1, "a");
+                                Self.g().fooCall(1, "a");
+                            }
+                        }

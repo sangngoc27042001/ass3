@@ -1,0 +1,22 @@
+     
+                        Class A {
+                           Var a:Int = 1;
+                           $fooExp1(x:Float; y:String){
+                                Return Self.a;
+                           } 
+                           $fooExp2(x:Float; y:String){
+                                Return x;
+                           }  
+                           $fooExp3(x:Float; y:String){
+                                Return y;
+                           }               
+                        }                        
+                        Class B{
+                            foo2(){
+                                Var e:Float = (New A()).a;
+                                e = A::$fooExp1(1, "a");
+                                e = A::$fooExp2(1, "a");
+                                Var f:String = A::$fooExp3(1, "a");
+                                Var g:Float = A::$fooExp3(1, "a");
+                            }
+                        }
