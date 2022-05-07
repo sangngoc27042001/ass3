@@ -485,7 +485,7 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Statement: VarDecl(Id(f),StringType,FieldAccess(Id(a),Id(b)))"
         self.assertTrue(TestChecker.test(input, expect, 431))
 
-    def test_399(self):
+    def test_432(self):
         """Simple program: int main() {} """
         input = """
                         Class B{
@@ -502,7 +502,7 @@ class CheckerSuite(unittest.TestCase):
                                 Val e:String = a.c(1,2);
                             }
                         }"""
-        expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(e),StringType,CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)]))"
+        expect = "Illegal Constant Expression: CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)])"
         self.assertTrue(TestChecker.test(input, expect, 432))
     def test_433(self):
         """Simple program: int main() {} """
@@ -547,7 +547,7 @@ class CheckerSuite(unittest.TestCase):
                                 Val e:String = a.d(1,2);
                             }
                         }"""
-        expect = "Type Mismatch In Expression: CallExpr(Id(a),Id(d),[IntLit(1),IntLit(2)])"
+        expect = "Illegal Constant Expression: CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)])"
         self.assertTrue(TestChecker.test(input, expect, 435))
 
     def test_436(self):
@@ -568,7 +568,7 @@ class CheckerSuite(unittest.TestCase):
                                 a.d(1,2,3);
                             }
                         }"""
-        expect = "Type Mismatch In Statement: Call(Id(a),Id(d),[IntLit(1),IntLit(2),IntLit(3)])"
+        expect = "Illegal Constant Expression: CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)])"
         self.assertTrue(TestChecker.test(input, expect, 436))
 
     def test_437(self):
@@ -589,7 +589,7 @@ class CheckerSuite(unittest.TestCase):
                                 a.c(1,2);
                             }
                         }"""
-        expect = "Type Mismatch In Statement: Call(Id(a),Id(c),[IntLit(1),IntLit(2)])"
+        expect = "Illegal Constant Expression: CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)])"
         self.assertTrue(TestChecker.test(input, expect, 437))
 
     def test_438(self):
@@ -609,7 +609,7 @@ class CheckerSuite(unittest.TestCase):
                                 a.d(1+2,2--2.0,"a"==."bcd");
                             }
                         }"""
-        expect = "Type Mismatch In Statement: Call(Id(a),Id(d),[BinaryOp(+,IntLit(1),IntLit(2)),BinaryOp(-,IntLit(2),UnaryOp(-,FloatLit(2.0))),BinaryOp(==.,StringLit(a),StringLit(bcd))])"
+        expect = "Illegal Constant Expression: CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)])"
         self.assertTrue(TestChecker.test(input, expect, 438))
 
     def test_439(self):
@@ -629,7 +629,7 @@ class CheckerSuite(unittest.TestCase):
                                 a.d(1+2,2--2.0,("a"==."bcd")+1);
                             }
                         }"""
-        expect = "Type Mismatch In Expression: BinaryOp(+,BinaryOp(==.,StringLit(a),StringLit(bcd)),IntLit(1))"
+        expect = "Illegal Constant Expression: CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)])"
         self.assertTrue(TestChecker.test(input, expect, 439))
 
     def test_440(self):
@@ -1474,6 +1474,65 @@ class CheckerSuite(unittest.TestCase):
                         }"""
         expect = "Type Mismatch In Expression: BinaryOp(+,CallExpr(Id(A),Id($fooExp3),[IntLit(1),StringLit(a)]),IntLit(1))"
         self.assertTrue(TestChecker.test(input, expect, 484))
+
+    def test_485(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           $fooExp1(x:Float; y:String){
+                                Var a:Array[Int, 2] = Array(1,1);
+                                a = Array(1,1,1);
+                           }               
+                        }"""
+        expect = "Type Mismatch In Statement: AssignStmt(Id(a),[IntLit(1),IntLit(1),IntLit(1)])"
+        self.assertTrue(TestChecker.test(input, expect, 485))
+
+    def test_486(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           $fooExp1(x:Float; y:String){
+                                Var a:Array[Int, 2] = Array(1,1);
+                                a = Array("a", "b");
+                           }               
+                        }"""
+        expect = "Type Mismatch In Statement: AssignStmt(Id(a),[StringLit(a),StringLit(b)])"
+        self.assertTrue(TestChecker.test(input, expect, 486))
+
+    def test_487(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           $fooExp1(x:Float; y:String){
+                                Var a: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1,1));
+                                Var b: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1));
+                           }               
+                        }"""
+        expect = "Illegal Array Literal: [[IntLit(1),IntLit(1)],[IntLit(1)]]"
+        self.assertTrue(TestChecker.test(input, expect, 487))
+
+    def test_488(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           $fooExp1(x:Float; y:String){
+                                Var a: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1,1));
+                                Var b: Array[Array[Int, 2],2] = Array(Array("a","a"),Array("a","abc"));
+                           }               
+                        }"""
+        expect = "Type Mismatch In Statement: VarDecl(Id(b),ArrayType(2,ArrayType(2,IntType)),[[StringLit(a),StringLit(a)],[StringLit(a),StringLit(abc)]])"
+        self.assertTrue(TestChecker.test(input, expect, 488))
+
+    def test_489(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           $fooExp1(x:Float; y:String){
+                                Var a: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1,1,"a"));
+                           }               
+                        }"""
+        expect = "Illegal Array Literal: [IntLit(1),IntLit(1),StringLit(a)]"
+        self.assertTrue(TestChecker.test(input, expect, 489))
 
 
 

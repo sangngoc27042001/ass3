@@ -1,1 +1,1 @@
-Type Mismatch In Statement: Call(Id(a),Id(d),[BinaryOp(+,IntLit(1),IntLit(2)),BinaryOp(-,IntLit(2),UnaryOp(-,FloatLit(2.0))),BinaryOp(==.,StringLit(a),StringLit(bcd))])
+Illegal Constant Expression: CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)])

@@ -1,1 +1,1 @@
-Type Mismatch In Expression: CallExpr(Id(a),Id(d),[IntLit(1),IntLit(2)])
+Illegal Constant Expression: CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)])
