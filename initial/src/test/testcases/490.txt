@@ -1,0 +1,9 @@
+     
+                        Class A {
+                           $fooExp1(){
+                                Var a: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1,1));
+                                a[1] = Array(1,1);
+                                a[1][1] = 1;
+                                a = 1;
+                           }               
+                        }

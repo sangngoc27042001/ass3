@@ -1534,7 +1534,43 @@ class CheckerSuite(unittest.TestCase):
         expect = "Illegal Array Literal: [IntLit(1),IntLit(1),StringLit(a)]"
         self.assertTrue(TestChecker.test(input, expect, 489))
 
+    def test_490(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           $fooExp1(){
+                                Var a: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1,1));
+                                a[1] = Array(1,1);
+                                a[1][1] = 1;
+                                a = 1;
+                           }               
+                        }"""
+        expect = "Type Mismatch In Statement: AssignStmt(Id(a),IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 490))
 
+    def test_491(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                           $fooExp1(){
+                                Val a: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1,1));
+                                a[1] = Array(1,1);
+                           }               
+                        }"""
+        expect = "Cannot Assign To Constant: AssignStmt(ArrayCell(Id(a),[IntLit(1)]),[IntLit(1),IntLit(1)])"
+        self.assertTrue(TestChecker.test(input, expect, 491))
+
+    def test_492(self):
+        """Simple program: int main() {} """
+        input = """     
+                        Class A {
+                        Val a:Int = 2;
+                           $fooExp1(){
+                                Self.a = "abc";
+                           }               
+                        }"""
+        expect = "Cannot Assign To Constant: AssignStmt(FieldAccess(Self(),Id(a)),StringLit(abc))"
+        self.assertTrue(TestChecker.test(input, expect, 492))
 
 
 
