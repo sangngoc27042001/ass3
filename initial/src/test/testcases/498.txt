@@ -1,0 +1,15 @@
+
+                        Class Program{
+
+                            Val $someStatic : Int = 10;
+
+                            foo() {
+
+                                Var Program : Float = 1.0;
+
+                                Var x : Int = Program::$someStatic;
+
+                           }
+
+                        }
+            

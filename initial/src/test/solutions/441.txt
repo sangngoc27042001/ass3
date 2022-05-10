@@ -1,1 +1,1 @@
-Type Mismatch In Statement: AssignStmt(Id(y),NewExpr(Id(B),[]))
+Type Mismatch In Statement: AssignStmt(Id(x),NewExpr(Id(A),[]))

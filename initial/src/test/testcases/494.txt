@@ -1,0 +1,10 @@
+
+                Class A {
+
+                    foo() {
+                        Var a: Array[Int, 3] = Array(1,2,3);
+                        a[4] = 5; ## Index out of bound ##
+                        a[1][2] = 4; ## Error with dimension##
+                    }
+                }
+            

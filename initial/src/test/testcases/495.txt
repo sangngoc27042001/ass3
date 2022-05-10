@@ -1,0 +1,19 @@
+
+                        Class Student
+                        {
+                            Var name: String;
+                            Var ID: Int;
+                            Constructor(newName: String; newID : Int)
+                            {
+                                Self.name = newName;
+                                Self.ID = newID;
+                            }
+                        }
+                        Class Program
+                        {
+                            main()
+                            {
+                                Var myStudent: Student = New Student ();
+                            }
+                        }
+            
