@@ -1,1 +1,1 @@
-Type Mismatch In Statement: ConstDecl(Id(b),StringType,NewExpr(Id(E),[IntLit(1)]))
+Type Mismatch In Constant Declaration: ConstDecl(Id(b),StringType,NewExpr(Id(E),[IntLit(1)]))

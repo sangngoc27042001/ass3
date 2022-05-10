@@ -1196,7 +1196,7 @@ class CheckerSuite(unittest.TestCase):
                           Var e: E = New E(1);              
                           Val b: String = New E(1);                                
                         } """
-        expect = "Type Mismatch In Statement: ConstDecl(Id(b),StringType,NewExpr(Id(E),[IntLit(1)]))"
+        expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(b),StringType,NewExpr(Id(E),[IntLit(1)]))"
         self.assertTrue(TestChecker.test(input, expect, 472))
 
     def test_473(self):
