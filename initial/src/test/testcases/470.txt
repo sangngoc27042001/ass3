@@ -1,11 +1,11 @@
-     
+
                         Class E {
-                           func() {                        
-                           }                        
-                        }                        
-                        Class Test{                        
-                          test() {                        
-                                Var e: E = New E();                        
-                                Return e.func;                       
-                          }                        
+                           func() {
+                           }
+                        }
+                        Class Test{
+                          test() {
+                                Var e: E = New E();
+                                Return e.func;
+                          }
                         } 

@@ -1,12 +1,12 @@
-     
+
                         Class A {
                            Var a:Int = 1;
                            fooExp(x:Float; y:String){
                                 Return 1;
-                           }  
-                           fooCall(x:Float; y:String){}                    
-                        }                        
-                        Class B{ 
+                           }
+                           fooCall(x:Float; y:String){}
+                        }
+                        Class B{
                             Var b:A = New A();
                             foo(){
                                 Return New A();

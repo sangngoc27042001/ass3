@@ -1,7 +1,7 @@
-     
+
                         Class A {
                         Val a:Int = 2;
-                           $fooExp1(){
+                           fooExp1(){
                                 Self.a = "abc";
-                           }               
+                           }
                         }

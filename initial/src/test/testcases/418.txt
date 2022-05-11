@@ -1,7 +1,13 @@
 
-                        Class C{
-                            e(){
-                                Val a:Int = 2;
-                                a=3;
-                            }
-                        }
+            Class A {
+
+                Var goo : Int = 1;
+
+                foo(){
+
+                    Var x : Int = Self.goo();
+
+                }
+
+            }
+        

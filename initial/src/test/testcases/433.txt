@@ -1,6 +1,7 @@
 
-                        Class C{
-                            e(){
-                                Val a : Int = 1.2;
-                            }
-                        }
+                Class A {
+                    main(){
+                        Var b: Int = E::$a;
+                    }
+                }
+            

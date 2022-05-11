@@ -1,1 +1,1 @@
-Undeclared Attribute: d
+Type Mismatch In Statement: MethodDecl(Id(Destructor),Instance,[],Block([Return(IntLit(1))]))

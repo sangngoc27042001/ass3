@@ -1,11 +1,11 @@
-     
+
                         Class A {
                            Var a:Int = 1;
                            foo(){
                                 Return 1;
-                           }                      
-                        }                        
-                        Class B{ 
+                           }
+                        }
+                        Class B{
                             Var b:A = New A();
                             foo(){
                                 Return New A();

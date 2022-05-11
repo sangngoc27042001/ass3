@@ -2,6 +2,7 @@ import unittest
 from TestUtils import TestChecker
 from AST import *
 
+
 class CheckerSuite(unittest.TestCase):
     def test_400(self):
         """Simple program: int main() {} """
@@ -15,30 +16,30 @@ class CheckerSuite(unittest.TestCase):
     def test_401(self):
         """Simple program: int main() {} """
         input = Program(
-                        [
-                            ClassDecl(
-                                Id('Program'),
-                                [
-                                    MethodDecl(
-                                        Static(),
-                                        Id("main"),
-                                        [],
-                                        Block([
-                                            ConstDecl(
-                                                Id("myVar"),
-                                                IntType(),
-                                                IntLiteral(5)
-                                            ),
-                                            Assign(
-                                                Id("myVar"),
-                                                IntLiteral(10)
-                                            )]
-                                        )
-                                    )
-                                ]
+            [
+                ClassDecl(
+                    Id('Program'),
+                    [
+                        MethodDecl(
+                            Static(),
+                            Id("main"),
+                            [],
+                            Block([
+                                ConstDecl(
+                                    Id("myVar"),
+                                    IntType(),
+                                    IntLiteral(5)
+                                ),
+                                Assign(
+                                    Id("myVar"),
+                                    IntLiteral(10)
+                                )]
                             )
-                        ]
-                    )
+                        )
+                    ]
+                )
+            ]
+        )
         expect = "Cannot Assign To Constant: AssignStmt(Id(myVar),IntLit(10))"
         self.assertTrue(TestChecker.test(input, expect, 401))
 
@@ -245,8 +246,10 @@ class CheckerSuite(unittest.TestCase):
 
                 foo(){
 
-                    Var x : Int = Self.goo; 
+                    Var x : Int = Self.goo;
+
                 }
+
             }
         """
         expect = "Undeclared Attribute: goo"
@@ -260,8 +263,10 @@ class CheckerSuite(unittest.TestCase):
 
                 foo(){
 
-                    Var x : Int = Self.goo(); 
+                    Var x : Int = Self.goo();
+
                 }
+
             }
         """
         expect = "Undeclared Method: goo"
@@ -277,7 +282,6 @@ class CheckerSuite(unittest.TestCase):
         """
         expect = "Type Mismatch In Statement: VarDecl(Id(A),ArrayType(5,StringType),[StringLit(Hello)])"
         self.assertTrue(TestChecker.test(input, expect, 419))
-
 
     def test_420(self):
         input = """
@@ -398,3 +402,255 @@ class CheckerSuite(unittest.TestCase):
 
         expect = "No Entry Point"
         self.assertTrue(TestChecker.test(input, expect, 426))
+
+    def test_427(self):
+        input = """
+                Class A {
+                    Var a:Int=3;
+                    Var b:Array[Int,2];
+                    Val c:Int = Self.b[1];
+                }
+            """
+
+        expect = "Illegal Constant Expression: ArrayCell(FieldAccess(Self(),Id(b)),[IntLit(1)])"
+        self.assertTrue(TestChecker.test(input, expect, 427))
+
+    def test_428(self):
+        input = """
+                Class Program {
+                    main(a: Int){}
+                }
+            """
+
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 428))
+
+    def test_429(self):
+        input = """
+                Class Program {
+                    main(){
+                        Return 1;
+                    }
+                }
+            """
+
+        expect = "Type Mismatch In Statement: MethodDecl(Id(main),Static,[],Block([Return(IntLit(1))]))"
+        self.assertTrue(TestChecker.test(input, expect, 429))
+
+    def test_430(self):
+        input = """
+                Class A {
+                    Destructor(){
+                        Return 1;
+                    }
+                }
+            """
+
+        expect = "Type Mismatch In Statement: MethodDecl(Id(Destructor),Instance,[],Block([Return(IntLit(1))]))"
+        self.assertTrue(TestChecker.test(input, expect, 430))
+
+    def test_431(self):
+        input = """
+                Class A {
+                    main(a: Int){
+                        Return 1;
+                    }
+                }
+            """
+
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 431))
+
+    def test_432(self):
+        input = """
+                Class A {
+                    main(){
+                        Var b: Int = E.a;
+                    }
+                }
+            """
+
+        expect = "Undeclared Identifier: E"
+        self.assertTrue(TestChecker.test(input, expect, 432))
+
+    def test_433(self):
+        input = """
+                Class A {
+                    main(){
+                        Var b: Int = E::$a;
+                    }
+                }
+            """
+
+        expect = "Undeclared Class: E"
+        self.assertTrue(TestChecker.test(input, expect, 433))
+
+    def test_434(self):
+        input = """
+                Class A {
+                    main(){
+                        Val x: Int = 2;
+                        Foreach(x In 1 .. 100 By 1){}
+                    }
+                }
+            """
+
+        expect = "Cannot Assign To Constant: AssignStmt(Id(x),IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 434))
+
+    def test_435(self):
+        input = """
+                Class A {
+                  Var a: Int;
+                }
+                Class Program {
+                  main(){
+                    Var obj: A = New A();
+                    Var b: Int = obj.a;
+                   }
+                  foo(){
+                    x = 1;
+                  }
+                }
+            """
+
+        expect = "Undeclared Identifier: x"
+        self.assertTrue(TestChecker.test(input, expect, 435))
+
+    def test_436(self):
+        input = """
+                Class A {
+                  Var a: Int;
+                }
+                Class B: A {
+                   foo(){
+                        Var x: Int = Self.a;
+                   }
+                }
+            """
+
+        expect = "Undeclared Attribute: a"
+        self.assertTrue(TestChecker.test(input, expect, 436))
+
+    def test_437(self):
+        input = """
+                Class Program {
+
+                    main() {
+
+                        Foreach (x In 1 .. 10 By 2) {}
+
+                        Return;
+
+                    }
+
+                }
+            """
+
+        expect = "Undeclared Identifier: x"
+        self.assertTrue(TestChecker.test(input, expect, 437))
+
+    def test_438(self):
+        input = """
+                Class Program{
+
+                    foo(){}
+
+                    $someStaticMethod(){
+
+                        Self.foo();
+
+                    }
+
+                }
+            """
+
+        expect = "Illegal Member Access: Call(Self(),Id(foo),[])"
+        self.assertTrue(TestChecker.test(input, expect, 438))
+
+    def test_439(self):
+        input = """
+                Class A{
+                    Val y:Int=10;
+                }
+                Class B{
+                    Var x:A;
+                    func (){
+                        Val z:Int=Self.x.y;
+                    }
+                }
+            """
+
+        expect = "Illegal Constant Expression: FieldAccess(FieldAccess(Self(),Id(x)),Id(y))"
+        self.assertTrue(TestChecker.test(input, expect, 439))
+
+    def test_440(self):
+        input = """
+                Class Program{
+
+                      foo(){
+
+                        Val x: Int = 1;
+
+                        Return x;
+
+                      }
+
+                      foo2(){
+
+                       Var x: Int = 1;
+
+                       Return x;
+
+                      }
+
+                      main(){
+
+                        Val y1: Int = Self.foo() + 1; ## OK since Self.foo() return Constant ##
+
+                        Val y2: Int = Self.foo2() + 1; ## Raise error because Self.foo2() return Variable ##
+
+                      }
+
+                }
+            """
+
+        expect = "Illegal Member Access: CallExpr(Self(),Id(foo),[])"
+        self.assertTrue(TestChecker.test(input, expect, 440))
+
+    def test_441(self):
+        input = """
+                Class Program{
+
+                      foo(){
+
+                        Val x: Int = 1;
+
+                        Return x;
+
+                      }
+
+                      foo2(){
+
+                       Var x: Int = 1;
+
+                       Return x;
+
+                      }
+
+                      foo3(){
+
+                        Val y1: Int = Self.foo() + 1; ## OK since Self.foo() return Constant ##
+
+                        Val y2: Int = Self.foo2() + 1; ## Raise error because Self.foo2() return Variable ##
+
+                      }
+
+                      main(){}
+
+
+                }
+            """
+
+        expect = "Illegal Constant Expression: BinaryOp(+,CallExpr(Self(),Id(foo2),[]),IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 441))

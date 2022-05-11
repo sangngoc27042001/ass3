@@ -1,10 +1,8 @@
 
-                        Class C{
-                            e(){
-                                Val a : Float = -(1.2 +1);
-                                Val b : Float = -(1 + 1);
-                                Val c : Boolean = !!((1>2)&&(True || ("abc"==."cef")));
-                                Val d :String = ("abc" +. "def")+."ghi";
-                                Val e :String = True==1;
-                            }
-                        }
+                Class A {
+                    main(){
+                        Val x: Int = 2;
+                        Foreach(x In 1 .. 100 By 1){}
+                    }
+                }
+            

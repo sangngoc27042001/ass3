@@ -1,1 +1,1 @@
-Type Mismatch In Statement: AssignStmt(Id(x),NewExpr(Id(A),[]))
+Illegal Constant Expression: BinaryOp(+,CallExpr(Self(),Id(foo2),[]),IntLit(1))

@@ -1,1 +1,1 @@
-Illegal Member Access: Call(Id(b),Id($a),[])
+Undeclared Class: b

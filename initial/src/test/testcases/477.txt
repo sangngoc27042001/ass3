@@ -1,9 +1,9 @@
-     
+
                         Class A {
-                           Var a:Int = 1;                      
-                        }                        
-                        Class B{ 
-                            Var $b:A = New A(); 
+                           Var a:Int = 1;
+                        }
+                        Class B{
+                            Var $b:A = New A();
                         }
                         Class C{
                             foo(){

@@ -1,8 +1,8 @@
-         
+
                         Class A{
                             $a(){}
                             b(){}
-                        }         
+                        }
                         Class B{
                         func(){
                             A::$a();

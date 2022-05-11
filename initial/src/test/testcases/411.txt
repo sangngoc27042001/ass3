@@ -1,9 +1,5 @@
 
-                    Class B{}
-                    Class A{
-                    b(){
-                        Var b:Int = 1;
-                        Var c:A;
-                        Var a:C;
-                    }
-                    }
+            Class A {
+                Var a: Int = 2.2;
+            }
+        

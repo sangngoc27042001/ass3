@@ -1,4 +1,4 @@
-     
+
                         Class B{
                         Var x:Int = 1;
                         foo(){

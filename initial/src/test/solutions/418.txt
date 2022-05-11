@@ -1,1 +1,1 @@
-Cannot Assign To Constant: AssignStmt(Id(a),IntLit(3))
+Undeclared Method: goo

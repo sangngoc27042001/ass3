@@ -1,4 +1,4 @@
-         
+
                         Class A{
                             $a(){
                                 Return 1;

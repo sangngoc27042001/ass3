@@ -1,1 +1,1 @@
-Undeclared Attribute: e
+Type Mismatch In Statement: AssignStmt(Id(a),[StringLit(a),StringLit(b)])
