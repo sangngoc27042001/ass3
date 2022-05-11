@@ -1663,17 +1663,11 @@ class CheckerSuite(unittest.TestCase):
     def test_498(self):
         input = """
                         Class Program{
-
                             Val $someStatic : Int = 10;
-
                             foo() {
-
                                 Var Program : Float = 1.0;
-
                                 Var x : Int = Program::$someStatic;
-
                            }
-
                         }
             """
 
@@ -1686,6 +1680,24 @@ class CheckerSuite(unittest.TestCase):
                       Var foo: Int = 1;
                       foo() {
                       }
+                }
+            """
+
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 499))
+
+    def test_500(self):
+        input = """
+                Class A {
+                    Val $a: Int = 1;
+                }
+                Class B{
+                    Var $a:Int = 1;
+                    Val $b:Int = A::$a;
+                    foo(){
+                        Val c:Int = B::$b+1;
+                        Return 1;
+                    }
                 }
             """
 
