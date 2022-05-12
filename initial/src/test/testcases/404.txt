@@ -1,8 +1,6 @@
-
-            Class Program {
-                Var a: Int = 20;
-                main() {
-                    a = 10;
-                }
-            }
-        
+Class a{
+                    b(){
+                        Var a:Int;
+                        Var a:Int;
+                    }
+                    }

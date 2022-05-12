@@ -1,13 +1,16 @@
 
-            Class A {
+                        Class B{
 
-                goo(){Return 1;}
-
-                foo(){
-
-                    Var x : Int = Self.goo;
-
-                }
-
-            }
-        
+                        }
+                        Class A:B{
+                            Var b:Int = 1;
+                            c(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:A;
+                                a.b= 2;
+                                a.c();
+                                a.e();
+                            }
+                        }

@@ -1,1 +1,1 @@
-Illegal Constant Expression: FieldAccess(FieldAccess(Self(),Id(x)),Id(y))
+Type Mismatch In Expression: BinaryOp(+,BinaryOp(==.,StringLit(a),StringLit(bcd)),IntLit(1))

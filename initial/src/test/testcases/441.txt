@@ -1,32 +1,17 @@
 
-                Class Program{
-
-                      foo(){
-
-                        Val x: Int = 1;
-
-                        Return x;
-
-                      }
-
-                      foo2(){
-
-                       Var x: Int = 1;
-
-                       Return x;
-
-                      }
-
-                      foo3(){
-
-                        Val y1: Int = Self.foo() + 1; ## OK since Self.foo() return Constant ##
-
-                        Val y2: Int = Self.foo2() + 1; ## Raise error because Self.foo2() return Variable ##
-
-                      }
-
-                      main(){}
-
-
-                }
-            
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class A:B{}
+                        Class C{
+                            e(){
+                                Var x:B = New B();
+                                x = New A();
+                                Var y:A = New A();
+                                y = New B();
+                            }
+                        }

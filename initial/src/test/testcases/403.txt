@@ -1,20 +1,4 @@
-
-            Class E {
-
-               func() {
-
-               }
-
-            }
-
-            Class Test{
-
-              test() {
-
-                Var e: E = New E();
-                Return e.func;
-
-              }
-
-            }
-        
+Class a{
+    Var a:Int;
+    a(){}
+}

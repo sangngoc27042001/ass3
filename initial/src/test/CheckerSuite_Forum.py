@@ -681,3 +681,20 @@ class CheckerSuite(unittest.TestCase):
 
         expect = "Type Mismatch In Statement: Return(IntLit(1))"
         self.assertTrue(TestChecker.test(input, expect, 432))
+
+    def test_399(self):
+        input = """
+                Class A {
+                    Constructor(){
+                        Return;
+                    }
+                }
+                Class B{
+                    foo(){
+                        Var b:A = New A();
+                    }
+                }
+            """
+
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 432))

@@ -1,1 +1,1 @@
-Cannot Assign To Constant: AssignStmt(Id(x),IntLit(1))
+Type Mismatch In Expression: BinaryOp(==,BooleanLit(True),IntLit(1))

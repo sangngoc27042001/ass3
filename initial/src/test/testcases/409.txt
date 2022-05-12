@@ -1,11 +1,10 @@
-
-            Class A {
-                Var a: Int;
-                Val b: Int = 1;
-                c()
-                {
-                    Val c: Int = Self.b - 1;
-                    Val d: Int = Self.a - 1;
-                }
-            }
-        
+Class a{
+                    b(){
+                        Var a:Int = 1;
+                        {
+                            Var a:Int = 1;
+                            Var b:Int = 1;
+                            Val b:Int = 1;
+                        }
+                    }
+                    }

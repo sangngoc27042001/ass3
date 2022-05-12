@@ -1,1 +1,1 @@
-Undeclared Class: C
+Type Mismatch In Expression: BinaryOp(==,IntLit(0),BooleanLit(False))

@@ -1,1 +1,1 @@
-Illegal Constant Expression: ArrayCell(FieldAccess(Self(),Id(b)),[IntLit(1)])
+Type Mismatch In Expression: CallExpr(Id(a),Id(c),[FloatLit(1.1),IntLit(2)])

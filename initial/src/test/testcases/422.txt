@@ -1,19 +1,8 @@
 
-                        Class Student
-                        {
-                            Var name: String;
-                            Var ID: Int;
-                            Constructor(newName: String; newID : Int)
-                            {
-                                Self.name = newName;
-                                Self.ID = newID;
+                        Class C{
+                            e(){
+                                Var c:String = "abc" +. "def";
+                                Var d:Boolean = ("abc" +. "def") ==. "ghi";
+                                Var e:String = ("abc" ==. "def") +. "ghi";
                             }
                         }
-                        Class Program
-                        {
-                            main()
-                            {
-                                Var myStudent: Student = New Student ();
-                            }
-                        }
-            
