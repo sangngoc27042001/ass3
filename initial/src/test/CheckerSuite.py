@@ -325,7 +325,7 @@ class CheckerSuite(unittest.TestCase):
                                 Var f:Boolean = "abc"||1;
                             }
                         }"""
-        expect = "Type Mismatch In Expression: BinaryOp(||,StringLit(abc),IntLit(1))"
+        expect = "Type Mismatch In Expression: BinaryOp(==,IntLit(0),BooleanLit(False))"
         self.assertTrue(TestChecker.test(input, expect, 423))
 
     def test_424(self):
@@ -339,7 +339,7 @@ class CheckerSuite(unittest.TestCase):
                             }
                         }"""
         expect = "Type Mismatch In Expression: UnaryOp(!,UnaryOp(-,UnaryOp(-,FloatLit(1.22))))"
-        self.assertTrue(TestChecker.test(input, expect, 423))
+        self.assertTrue(TestChecker.test(input, expect, 424))
 
     def test_425(self):
         """Simple program: int main() {} """
@@ -529,7 +529,7 @@ class CheckerSuite(unittest.TestCase):
                                 Val e :String = True==1;
                             }
                         }"""
-        expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(e),StringType,BinaryOp(==,BooleanLit(True),IntLit(1)))"
+        expect = "Type Mismatch In Expression: BinaryOp(==,BooleanLit(True),IntLit(1))"
         self.assertTrue(TestChecker.test(input, expect, 434))
 
     def test_435(self):

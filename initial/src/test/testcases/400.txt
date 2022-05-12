@@ -1,12 +1,4 @@
 
-                    Class c{
-                        Var a:Int;
-                        Var b:Int;
-                        Var c:Int;
-                    }
-                    Class a{
-                    Var a:Int;
-                    Var a:Int;
-                    }
-                    Class b{}
-                    Class d{}
+                    Class A: B{}
+                    Class B{}
+                

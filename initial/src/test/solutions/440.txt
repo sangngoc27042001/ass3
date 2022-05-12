@@ -1,1 +1,1 @@
-Type Mismatch In Statement: AssignStmt(Id(a),NewExpr(Id(A),[]))
+Illegal Member Access: CallExpr(Self(),Id(foo),[])

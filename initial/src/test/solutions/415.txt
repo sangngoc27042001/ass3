@@ -1,1 +1,1 @@
-Undeclared Class: D
+Type Mismatch In Statement: AssignStmt(Id(a),[IntLit(1),IntLit(2),IntLit(3)])

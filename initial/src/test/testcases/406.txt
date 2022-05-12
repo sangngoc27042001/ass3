@@ -1,5 +1,6 @@
-Class a{
-                    b(a:Int){
-                        Val a:Int = 1;
-                    }
-                    }
+
+            Class A {
+                Var a: Int;
+                Val b: Int = 1+Self.a;
+            }
+        

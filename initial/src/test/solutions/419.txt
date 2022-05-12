@@ -1,1 +1,1 @@
-Type Mismatch In Expression: ArrayCell(Id(a),[IntLit(1)])
+Type Mismatch In Statement: VarDecl(Id(A),ArrayType(5,StringType),[StringLit(Hello)])

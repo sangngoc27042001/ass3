@@ -1,3 +1,7 @@
-Class a{
-                    a(a:Int;a:String){}
-                    }
+
+             Class Program {
+               main() {
+                  a = b;
+               }
+            }
+        
