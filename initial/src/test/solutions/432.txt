@@ -1,1 +1,1 @@
-Type Mismatch In Statement: Return(IntLit(1))
+Type Mismatch In Constant Declaration: ConstDecl(Id(e),StringType,CallExpr(Id(a),Id(c),[IntLit(1),IntLit(2)]))

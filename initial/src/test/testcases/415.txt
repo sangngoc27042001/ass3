@@ -1,9 +1,9 @@
 
-            Class Program {
-               main(){
-                    Var a:Array[Int,2];
-
-                    a = Array(1,2,3);
-               }
-            }
-        
+                    Class B{
+                        Var b:Int = 1;
+                        c(){}
+                    }
+                    Class A:B{
+                    }
+                    Class C:D{
+                    }

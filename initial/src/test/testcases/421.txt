@@ -1,10 +1,8 @@
 
-                Class A {
-
-                    foo() {
-                        Var a: Array[Int, 3] = Array(1,2,3);
-                        a[4] = 5; ## Index out of bound ##
-                        a[1][2] = 4; ## Error with dimension##
-                    }
-                }
-            
+                        Class C{
+                            e(){
+                                Var a:Int = 1+2;
+                                Var b:Float = 1+2.2;
+                                Var c:Float = 1+True;
+                            }
+                        }

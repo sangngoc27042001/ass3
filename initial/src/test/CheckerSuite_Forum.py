@@ -434,7 +434,7 @@ class CheckerSuite(unittest.TestCase):
                 }
             """
 
-        expect = "Type Mismatch In Statement: MethodDecl(Id(main),Static,[],Block([Return(IntLit(1))]))"
+        expect = "Type Mismatch In Statement: Return(IntLit(1))"
         self.assertTrue(TestChecker.test(input, expect, 429))
 
     def test_430(self):

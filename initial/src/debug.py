@@ -26,7 +26,7 @@ def main():
     if not (TARGET_DIR + "/" + GENERATE_DIR) in sys.path:
         sys.path.append(TARGET_DIR + "/" + GENERATE_DIR)
     if True:
-        from CheckerSuite_Forum import CheckerSuite
+        from CheckerSuite import CheckerSuite
         getAndTest(CheckerSuite)
 
 

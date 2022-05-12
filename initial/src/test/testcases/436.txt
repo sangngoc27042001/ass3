@@ -1,10 +1,16 @@
 
-                Class A {
-                  Var a: Int;
-                }
-                Class B: A {
-                   foo(){
-                        Var x: Int = Self.a;
-                   }
-                }
-            
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class C{
+                            e(){
+                                Val a:B = New B();
+                                Val d:Float = a.c(1,2);
+                                a.d(1,2,"a");
+                                a.d(1,2,3);
+                            }
+                        }

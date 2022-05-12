@@ -1,1 +1,1 @@
-No Entry Point
+Type Mismatch In Statement: VarDecl(Id(f),StringType,FieldAccess(Id(a),Id(b)))
