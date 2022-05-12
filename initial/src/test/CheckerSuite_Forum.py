@@ -446,7 +446,7 @@ class CheckerSuite(unittest.TestCase):
                 }
             """
 
-        expect = "Type Mismatch In Statement: MethodDecl(Id(Destructor),Instance,[],Block([Return(IntLit(1))]))"
+        expect = "Type Mismatch In Statement: Return(IntLit(1))"
         self.assertTrue(TestChecker.test(input, expect, 430))
 
     def test_431(self):
@@ -654,3 +654,30 @@ class CheckerSuite(unittest.TestCase):
 
         expect = "Illegal Constant Expression: BinaryOp(+,CallExpr(Self(),Id(foo2),[]),IntLit(1))"
         self.assertTrue(TestChecker.test(input, expect, 441))
+
+    def test_442(self):
+        input = """
+                Class A {
+                    Constructor(){
+                        Return;
+                    }
+                    Destructor(){
+                        Return;
+                    }
+                }
+            """
+
+        expect = "Type Mismatch In Statement: Return()"
+        self.assertTrue(TestChecker.test(input, expect, 432))
+
+    def test_443(self):
+        input = """
+                Class A {
+                    Constructor(){
+                        Return 1;
+                    }
+                }
+            """
+
+        expect = "Type Mismatch In Statement: Return(IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 432))
