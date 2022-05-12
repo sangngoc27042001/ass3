@@ -1,11 +1,8 @@
 
-                Class A{
-                    Val y:Int=10;
-                }
-                Class B{
-                    Var x:A;
-                    func (){
-                        Val z:Int=Self.x.y;
+                    Class B{
+                        Val a:Int = 12;
+                        b(){Return 1.2;}
                     }
-                }
-            
+                    Class A{
+                        Var c: B = New B(1,"Hello",3); ## Error Here ##
+                    }

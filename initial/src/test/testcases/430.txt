@@ -1,7 +1,10 @@
 
-                Class A {
-                    Destructor(){
-                        Return 1;
+                    Class B{
+                        Val a:Int = 12;
+                        b(){Return 1.2;}
                     }
-                }
-            
+                    Class A{
+                        Var b: B = New B();
+                        Var a: A = New A();
+                        Var c: B = New A();
+                    }

@@ -1,23 +1,52 @@
 
-                        Class A {
-                           Var a:Int = 1;
-                           fooExp(x:Float; y:String){
-                                Return 1;
-                           }
-                           fooCall(x:Float; y:String){}
-                        }
-                        Class B{
-                            Var b:A = New A();
-                            foo(){
-                                Return New A();
-                            }
-                            foo2(){
-                                Var e:Int = Self.b.a;
-                                e = Self.b.fooExp(1, "a");
-                                e = Self.foo().a;
-                                e = Self.foo().fooExp(1, "a");
-                                Self.b.fooCall(1, "a");
-                                Self.foo().fooCall(1, "a");
-                                Self.g().fooCall(1, "a");
-                            }
-                        }
+        Class A{
+            Val $B: Int = 10;
+        }
+
+        Class B{
+            Val C: Int = A::$B;
+            a(a : Int){
+                Return "a";
+            }
+            cast(a : Int){
+                If(a == 0){
+                    Return "Zero";
+                }
+                Elseif(a == 1){
+                    Return "One";
+                }
+                Elseif(a == 0x2){
+                    Return "Two";
+                }
+                Elseif(a == (0x4 - 0b1)){
+                    Return "Three";
+                }
+                Else{
+                    Return Self.a(a - 1) +. "Three";
+                } 
+                Return "Other";
+            }
+            fibonacci(a : Int){
+                Var s: Int;
+                Var arr: Array[Int, 1000];
+                arr[0] = 0;
+                arr[1] = 1;
+                If(s == 0){
+                    Return 0;
+                }
+                Elseif(s == 1){
+                    Return 1;
+                }
+                Foreach(s In 2 .. a){
+                    arr[s] = arr[s - 1] + arr[s - 2];
+                }
+                Return arr[a];
+            }
+        }
+        Class Program {
+            Var C: A = New A();
+            main(){
+                Val b: Int = Self.C;
+            }
+        }
+        

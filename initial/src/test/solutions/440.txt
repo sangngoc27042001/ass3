@@ -1,1 +1,1 @@
-Illegal Member Access: CallExpr(Self(),Id(foo),[])
+Type Mismatch In Expression: ArrayCell(Id(a),[IntLit(1),IntLit(2)])

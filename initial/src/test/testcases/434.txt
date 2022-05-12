@@ -1,8 +1,10 @@
 
-                Class A {
-                    main(){
-                        Val x: Int = 2;
-                        Foreach(x In 1 .. 100 By 1){}
+                    Class B{
+                        Val a:Int = 12;
+                        b(){Return 1.2;}
+                        Constructor(a:Int; b:Int){}
+                        Constructor(){}
                     }
-                }
-            
+                    Class A{
+                        Var c: B = New B(1,"Hello"); ## Error Here ##
+                    }

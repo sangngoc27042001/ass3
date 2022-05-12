@@ -1,7 +1,13 @@
 
-                Class A {
-                    Var a:Int=3;
-                    Var b:Array[Int,2];
-                    Val c:Int = Self.b[1];
-                }
-            
+                    Class B{
+                        Var a:Float = 12;
+                        b(){Return 1.2;}
+                    }
+                    Class A{
+                        a(){Return New B();}
+                        b(){
+                            Var class_name:B = New B();
+                            Var b:Int = 1;
+                            b = Self.a().a;
+                        }
+                    }

@@ -1,7 +1,6 @@
-
-            Class Triangle {
-                main(){
-                    Var Triangle : String;
-                }
-            }
-        
+Class a{
+                    b(){
+                        Val f:Int = 1;
+                        Val f:Int = 1;
+                    }
+                    }

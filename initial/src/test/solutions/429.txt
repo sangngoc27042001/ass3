@@ -1,1 +1,1 @@
-Type Mismatch In Statement: Return(IntLit(1))
+Illegal Constant Expression: FieldAccess(CallExpr(Self(),Id(a),[]),Id(a))

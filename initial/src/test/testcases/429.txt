@@ -1,7 +1,13 @@
 
-                Class Program {
-                    main(){
-                        Return 1;
+                    Class B{
+                        Val a:Int = 12;
+                        b(){Return 1.2;}
                     }
-                }
-            
+                    Class A{
+                        Var a: B = New B();
+                        a(){Return Self.a;}
+                        b(){
+                            Var class_name:B = New B();
+                            Val b:Int = Self.a().a;
+                        }
+                    }

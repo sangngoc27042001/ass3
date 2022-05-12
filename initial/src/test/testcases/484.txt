@@ -1,22 +1,18 @@
 
-                        Class A {
-                           Var a:Int = 1;
-                           $fooExp1(x:Float; y:String){
-                                Return 1;
-                           }
-                           $fooExp2(x:Float; y:String){
-                                Return x;
-                           }
-                           $fooExp3(x:Float; y:String){
-                                Return y;
-                           }
-                        }
-                        Class BB{
-                            foo2(){
-                                Var e:Float = (New A()).a - 7;
-                                e = A::$fooExp1(1, "a") +2 - -----5;
-                                e = A::$fooExp2(1, "a") + 1;
-                                Var f:String = A::$fooExp3(1, "a") +. "abc";
-                                Var g:String = A::$fooExp3(1, "a") + 1;
-                            }
-                        }
+        Class A{
+            Var a1, a2, a3: String;
+            Var $s: Int = 0; 
+            Constructor(a, b, c : String){
+                A::$s = A::$s + 1;
+                Self.a1 = a;
+                Self.a2 = b;
+                Self.a3 = c;
+            }
+        }
+        Class Program{
+            Var x : A = Null;
+            main(){
+                Return 1;
+            }
+        }
+        

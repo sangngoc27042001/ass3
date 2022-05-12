@@ -1,7 +1,17 @@
 
-            Class A {
-
-                Var A : Array[String, 5] = Array("Hello");
-
-            }
-        
+                        Class B{
+                            Var b:Int = 1;
+                            c(){}
+                        }
+                        Class A:B{
+                            Var foo:Int = 1;
+                        }
+                        Class C:A{
+                            e(){
+                                Var a:A;
+                                a.b= 2;
+                                a.c();
+                                a.b = a.foo;
+                                a.b = a.h;
+                            }
+                        }

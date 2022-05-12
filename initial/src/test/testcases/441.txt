@@ -1,32 +1,19 @@
 
-                Class Program{
-
-                      foo(){
-
-                        Val x: Int = 1;
-
-                        Return x;
-
-                      }
-
-                      foo2(){
-
-                       Var x: Int = 1;
-
-                       Return x;
-
-                      }
-
-                      foo3(){
-
-                        Val y1: Int = Self.foo() + 1; ## OK since Self.foo() return Constant ##
-
-                        Val y2: Int = Self.foo2() + 1; ## Raise error because Self.foo2() return Variable ##
-
-                      }
-
-                      main(){}
-
-
-                }
+                        Class Student
+                        {
+                            Var name: String;
+                            Var ID: Int;
+                            Constructor(newName: String; newID : Int)
+                            {
+                                Self.name = newName;
+                                Self.ID = newID;
+                            }
+                        }
+                        Class Program
+                        {
+                            main()
+                            {
+                                Var myStudent: Student = New Student ();
+                            }
+                        }
             

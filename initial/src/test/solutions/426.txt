@@ -1,1 +1,1 @@
-No Entry Point
+Cannot Assign To Constant: AssignStmt(Id(b),CallExpr(Id(class_name),Id(b),[]))

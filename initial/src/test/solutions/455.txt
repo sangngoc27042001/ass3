@@ -1,1 +1,1 @@
-Illegal Member Access: FieldAccess(Id(A),Id(b))
+Type Mismatch In Statement: Return(IntLit(1))

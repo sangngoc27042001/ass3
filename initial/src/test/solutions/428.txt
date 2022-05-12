@@ -1,1 +1,1 @@
-No Entry Point
+Type Mismatch In Statement: AssignStmt(Id(b),FieldAccess(CallExpr(Self(),Id(a),[]),Id(a)))

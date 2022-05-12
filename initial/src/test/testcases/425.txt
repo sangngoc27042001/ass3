@@ -1,15 +1,13 @@
 
-                        Class Program{
-
-                            Val $someStatic : Int = 10;
-
-                            foo() {
-
-                                Var Program : Float = 1.0;
-
-                                Var x : Int = Program::$someStatic;
-
-                           }
-
+                    Class B{
+                        Var a:Float = 12;
+                        b(){Return 1.2;}
+                    }
+                    Class A{
+                        a(){Return 1.2;}
+                        b(){
+                            Var class_name:B = New B();
+                            Var b:Int = 1;
+                            b = class_name.b();
                         }
-            
+                    }

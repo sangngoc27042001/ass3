@@ -1,7 +1,17 @@
 
-                        Class A {
-                           $fooExp1(x:Float; y:String){
-                                Var a:Array[Int, 2] = Array(1,1);
-                                a = Array(1,1,1);
-                           }
-                        }
+        Class A{
+            Var arr1: Array[Array[String, 2], 2] = Array(Array("Kangzi", "Ploew"), Array("Quanzan", "Fuming"));
+            Var arr2: Array[String, 4] = Array(Self.arr1[0][0], Self.arr1[1][0], Self.arr1[0][1], Self.arr1[1][1]);
+            Constructor(){
+                Return 1;
+            }
+            Destructor(){
+                Return;
+            }
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

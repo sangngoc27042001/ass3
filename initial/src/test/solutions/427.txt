@@ -1,1 +1,1 @@
-Illegal Constant Expression: ArrayCell(FieldAccess(Self(),Id(b)),[IntLit(1)])
+Type Mismatch In Statement: AssignStmt(Id(b),FieldAccess(CallExpr(Self(),Id(a),[]),Id(a)))

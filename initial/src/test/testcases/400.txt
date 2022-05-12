@@ -1,4 +1,5 @@
 
-                    Class A: B{}
-                    Class B{}
-                
+                    Class c{
+                        Var a:Int;
+                        Var a:Int;
+                    }

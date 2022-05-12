@@ -1,1 +1,1 @@
-Undeclared Method: g
+Type Mismatch In Constant Declaration: ConstDecl(Id(C),ArrayType(2,IntType),[IntLit(1),IntLit(2),FieldAccess(Id(A),Id($B))])

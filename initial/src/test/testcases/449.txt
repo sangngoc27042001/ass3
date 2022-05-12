@@ -1,9 +1,6 @@
 
-                        Class C{
-                            e(){
-                                Var a:Int = 0;
-                                Val b:Int = 1;
-                                Val c:Float = b+1;
-                                Val d:Float = a + "abc";
-                            }
+                        Class A {
+                           $fooExp1(x:Float; y:String){
+                                Var a: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1,1,"a"));
+                           }
                         }

@@ -1,14 +1,14 @@
 
-                        Class E {
-                           $func() {
-                                Return 1;
-                           }
-                           Constructor(a:Int){
-                           }
-                        }
-                        Class Test{
-                            cak(){
-                                Var a:Int = E::$func();
-                                Var b:Int = E::$foo();
-                            }
-                        }
+        Class A {
+            Var a: Array[Int, 1] = Array(1, 2, 3, 4);
+            Var b: Array[Int, 1] = Array(True);
+
+            Var d,e: Int;
+            Val f: Array[Array[Int,1], 2] = Array( Array(d), Array(e) );
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

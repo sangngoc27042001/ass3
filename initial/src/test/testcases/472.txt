@@ -1,11 +1,24 @@
 
-                        Class E {
-                           func() {
-                           }
-                           Constructor(a:Int){
-                           }
-                        }
-                        Class Test{
-                          Var e: E = New E(1);
-                          Val b: String = New E(1);
-                        } 
+        Class A{
+            Var myVar: String = "Hello World";
+            dummy(a: Int){
+                Return a + 4;
+            }
+            dummy2(){
+                Return;
+            }
+            d(a: Int){
+                Self.dummy2();
+                Var s: Int = Self.dummy(2 + 2);
+                Var d: Int = Self.dummy(s);
+            }
+            s(){
+                Self.d(2);
+            }
+        }
+        Class Program{
+            main() {
+                Return 1;
+            }
+        }
+        

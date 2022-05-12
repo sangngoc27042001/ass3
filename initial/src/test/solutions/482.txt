@@ -1,1 +1,1 @@
-Undeclared Method: g
+Illegal Member Access: FieldAccess(Self(),Id(C))

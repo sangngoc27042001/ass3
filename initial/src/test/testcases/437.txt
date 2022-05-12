@@ -1,13 +1,9 @@
 
-                Class Program {
-
-                    main() {
-
-                        Foreach (x In 1 .. 10 By 2) {}
-
-                        Return;
-
+                    Class B{
+                        Val a:Int = 12;
+                        b(){Return 1.2;}
+                        Constructor(a:Int; b:Int){Return;}
                     }
-
-                }
-            
+                    Class A{
+                        Var c: B = New B(1,"Hello"); ## Error Here ##
+                    }

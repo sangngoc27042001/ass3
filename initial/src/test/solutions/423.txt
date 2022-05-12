@@ -1,1 +1,1 @@
-Undeclared Class: C
+Type Mismatch In Statement: AssignStmt(Id(b),FieldAccess(Id(class_name),Id(b)))

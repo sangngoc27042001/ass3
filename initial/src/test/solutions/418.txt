@@ -1,1 +1,1 @@
-Undeclared Method: goo
+Undeclared Attribute: b

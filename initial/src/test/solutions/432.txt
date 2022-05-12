@@ -1,1 +1,1 @@
-Type Mismatch In Statement: Return(IntLit(1))
+Type Mismatch In Expression: NewExpr(Id(B),[])

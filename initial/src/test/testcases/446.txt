@@ -1,15 +1,13 @@
 
-                        Class C{
-                            e(){
-                                Var i:Int = 0;
-                                Foreach(i In 1 .. 10 By 1){
-                                    Var a:Int = 1;
-                                    Break;
-                                    If (True){
-                                        Var a:Int = 1;
-                                        Continue;
-                                    }
-                                }
-                                Break;
-                            }
-                        }
+                Class A {
+                    Val $a: Int = 1;
+                }
+                Class B{
+                    Var $a:Int = 1;
+                    Val $b:Int = A::$a;
+                    foo(){
+                        Val c:Int = B::$b+1;
+                        Return 1;
+                    }
+                }
+            

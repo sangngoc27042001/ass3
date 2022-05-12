@@ -1,1 +1,1 @@
-No Entry Point
+Type Mismatch In Expression: NewExpr(Id(B),[IntLit(1),IntLit(2)])

@@ -1,1 +1,1 @@
-Illegal Member Access: Call(Id(A),Id(b),[])
+No Entry Point

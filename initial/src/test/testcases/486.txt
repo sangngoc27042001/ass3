@@ -1,7 +1,14 @@
 
-                        Class A {
-                           $fooExp1(x:Float; y:String){
-                                Var a:Array[Int, 2] = Array(1,1);
-                                a = Array("a", "b");
-                           }
-                        }
+        Class A{
+            Var a, d: Int;
+            sickle(s: String){
+                Break;
+                Return 1;
+            }
+        }
+        Class Program{
+            main(){
+
+            }
+        }
+            

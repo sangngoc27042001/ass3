@@ -1,1 +1,1 @@
-Undeclared Identifier: a
+Cannot Assign To Constant: AssignStmt(ArrayCell(Id(a),[IntLit(1)]),[IntLit(1),IntLit(1)])

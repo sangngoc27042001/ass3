@@ -1,1 +1,1 @@
-Undeclared Identifier: x
+Type Mismatch In Statement: Return(IntLit(1))

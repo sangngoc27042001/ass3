@@ -1,14 +1,14 @@
 
-                        Class A {
-                           Var a:Int = 1;
-                        }
-                        Class B{
-                            Var $b:A = New A();
-                        }
-                        Class C{
-                            foo(){
-                                Var c:B = New B();
-                                Var e:Int = B::$b.a;
-                                Var f:Int = B::$b.g;
-                            }
-                        }
+        Class A {
+            Val a: Array[Int, 4] = Array(1,2,3,4);
+            foo() {
+                Val a : Array[Int, 3] = Array(Self.a, 1, 2);
+                Val b : Int = a[0];
+            }
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

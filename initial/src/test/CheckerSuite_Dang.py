@@ -1120,6 +1120,61 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(C),ArrayType(2,IntType),[IntLit(1),IntLit(2),FieldAccess(Id(A),Id($B))])"
         self.assertTrue(TestChecker.test(input, expect, 481))
 
+    def test_482(self):
+        input = """
+        Class A{
+            Val $B: Int = 10;
+        }
+
+        Class B{
+            Val C: Int = A::$B;
+            a(a : Int){
+                Return "a";
+            }
+            cast(a : Int){
+                If(a == 0){
+                    Return "Zero";
+                }
+                Elseif(a == 1){
+                    Return "One";
+                }
+                Elseif(a == 0x2){
+                    Return "Two";
+                }
+                Elseif(a == (0x4 - 0b1)){
+                    Return "Three";
+                }
+                Else{
+                    Return Self.a(a - 1) +. "Three";
+                } 
+                Return "Other";
+            }
+            fibonacci(a : Int){
+                Var s: Int;
+                Var arr: Array[Int, 1000];
+                arr[0] = 0;
+                arr[1] = 1;
+                If(s == 0){
+                    Return 0;
+                }
+                Elseif(s == 1){
+                    Return 1;
+                }
+                Foreach(s In 2 .. a){
+                    arr[s] = arr[s - 1] + arr[s - 2];
+                }
+                Return arr[a];
+            }
+        }
+        Class Program {
+            Var C: A = New A();
+            main(){
+                Val b: Int = Self.C;
+            }
+        }
+        """
+        expect = "Illegal Member Access: FieldAccess(Self(),Id(C))"
+        self.assertTrue(TestChecker.test(input, expect, 482))
 
     def test_483(self):
         input = '''

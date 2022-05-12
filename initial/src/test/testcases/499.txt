@@ -1,13 +1,7 @@
 
-                Class A {
-                    Val $a: Int = 1;
+            Class A {
+                foo() {
+                    Var a: Int = 2.2;
                 }
-                Class B{
-                    Var $a:Int = 1;
-                    Val $b:Int = A::$a;
-                    foo(){
-                        Val c:Int = B::$b+1;
-                        Return 1;
-                    }
-                }
-            
+            }
+        

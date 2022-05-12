@@ -1,1 +1,1 @@
-Type Mismatch In Statement: VarDecl(Id(d),IntType,BinaryOp(+,Id(a),Id(b)))
+Type Mismatch In Statement: VarDecl(Id(a),ClassType(Id(A)),NewExpr(Id(B),[]))

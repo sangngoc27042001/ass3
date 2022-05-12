@@ -1,1 +1,1 @@
-No Entry Point
+Type Mismatch In Statement: AssignStmt(Id(b),CallExpr(Id(class_name),Id(b),[]))

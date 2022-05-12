@@ -1,12 +1,1 @@
-
-                        Class B{
-                        Var x:Int = 1;
-                        foo(){
-                            Return 1;
-                        }
-                        func (){
-                            Var a:Int = Self.x;
-                            a = Self.foo();
-                            Var b:String = Self.foo();
-                        }
-                        } 
+Class Program{ main(a:Int){} Var x: Boolean = ("hello" +. "world") ==. "helloworld"; }

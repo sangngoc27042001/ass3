@@ -1,7 +1,13 @@
 
-                Class A {
-                      Var foo: Int = 1;
-                      foo() {
-                      }
-                }
-            
+                    Class B{
+                        Var a:Float = 12;
+                        b(){Return 1.2;}
+                    }
+                    Class A{
+                        a(){Return 1.2;}
+                        b(){
+                            Var class_name:B = New B();
+                            Val b:Int = 1;
+                            b = class_name.b();
+                        }
+                    }

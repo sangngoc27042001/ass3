@@ -1,6 +1,16 @@
 
-                        Class A {
-                           $fooExp1(x:Float; y:String){
-                                Var a: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1,1,"a"));
-                           }
-                        }
+        Class A{
+            Var a, d: Int;
+            sickle(s: String; e: Int){
+                Var i: Int;
+                Foreach(i In 1 .. 10 By 2){
+                   Break; 
+                }
+                Return;
+            }
+        }
+        Class Program{
+            main(a:Int){
+            }
+        }
+        

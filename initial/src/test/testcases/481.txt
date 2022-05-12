@@ -1,23 +1,39 @@
 
-                        Class A {
-                           Var a:Int = 1;
-                           fooExp(x:Float; y:String){
-                                Return 1;
-                           }
-                           fooCall(x:Float; y:String){}
-                        }
-                        Class B{
-                            Var b:A = New A();
-                            foo(){
-                                Return New A();
-                            }
-                            foo2(){
-                                Var e:Int = Self.b.a;
-                                e = Self.b.fooExp(1, "a");
-                                e = Self.foo().a;
-                                e = Self.foo().fooExp(1, "a");
-                                Self.b.fooCall(1, "a");
-                                Self.foo().fooCall(1, "a");
-                                Self.g().fooCall(1, "a");
-                            }
-                        }
+        Class A{
+            Val $B: Int = 10;
+        }
+        Class B{
+            Val C: Int = A::$B;
+            cast(a: Int){
+                Return "Stuff";
+            }
+            i2s(a: Int){
+                If(a == 1){
+                    Return "One";
+                }
+                Elseif(a == 0){
+                    Return "Zero";
+                }
+                Elseif(a == 0x2){
+                    Return "Two";
+                }
+                Elseif(a == (0x4 - 0b1)){
+                    Return "Three";
+                }
+                Else{
+                    Return Self.cast(a - 1);
+                }
+                Return "2";
+            }
+        }
+        Class C{
+            Var B: String = "String";
+            Val C: Array[Int, 2] = Array(1, 2, A::$B);
+        }
+        Class Program {
+            Var C: C = New C();
+            main(){
+                Return;
+            }
+        }
+        

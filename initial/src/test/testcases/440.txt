@@ -1,29 +1,10 @@
 
-                Class Program{
+                Class A {
 
-                      foo(){
-
-                        Val x: Int = 1;
-
-                        Return x;
-
-                      }
-
-                      foo2(){
-
-                       Var x: Int = 1;
-
-                       Return x;
-
-                      }
-
-                      main(){
-
-                        Val y1: Int = Self.foo() + 1; ## OK since Self.foo() return Constant ##
-
-                        Val y2: Int = Self.foo2() + 1; ## Raise error because Self.foo2() return Variable ##
-
-                      }
-
+                    foo() {
+                        Var a: Array[Int, 3] = Array(1,2,3);
+                        a[4] = 5; ## Index out of bound ##
+                        a[1][2] = 4; ## Error with dimension##
+                    }
                 }
             

@@ -1,1 +1,1 @@
-Type Mismatch In Statement: VarDecl(Id(A),ArrayType(5,StringType),[StringLit(Hello)])
+Undeclared Attribute: b

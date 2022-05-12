@@ -1,1 +1,1 @@
-Type Mismatch In Expression: NewExpr(Id(E),[])
+Type Mismatch In Statement: VarDecl(Id(x),StringType,BinaryOp(==,IntLit(1),IntLit(2)))

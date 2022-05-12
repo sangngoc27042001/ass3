@@ -1,10 +1,1 @@
-
-                        Class A{
-                        Val y:Int=10;
-                        }
-                        Class B{
-                        Var x:A;
-                        func (){
-                            Val z:Int=Self.x.y;
-                        }
-                        } 
+Class Program{ main(a:Int){} Var x: Boolean = ((3 / 4) < 5) || !True || False; }

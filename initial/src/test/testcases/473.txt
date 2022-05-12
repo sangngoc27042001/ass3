@@ -1,13 +1,16 @@
 
-                        Class E {
-                           $func() {
-                           }
-                           Constructor(a:Int){
-                           }
-                        }
-                        Class Test{
-                            cak(){
-                                E::$func();
-                                E::$foo();
-                            }
-                        }
+        Class A{
+            Var a, d: Int;
+            sickle(s: String; e: Int){
+                Foreach(i In Self.a .. 10 By Self.d){
+                   Break;
+                   Continue;
+                }
+            }
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

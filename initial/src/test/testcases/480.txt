@@ -1,20 +1,19 @@
 
-                        Class A {
-                           Var a:Int = 1;
-                           foo(x:Float; y:String){
-                           }
-                        }
-                        Class B{
-                            Var b:A = New A();
-                            foo(){
-                                Return New A();
-                            }
-                        }
-                        Class C{
-                            foo(){
-                                Var c:B = New B();
-                                c.foo().foo(1,"a");
-                                c.b.foo(1.2,"a");
-                                c.b.foo(1,1.2);
-                            }
-                        }
+        Class A {
+            $foo(){
+                Val a: Int = 1;
+                Foreach(a In 1 .. a){
+                    Break;
+                }
+                Return;
+            }
+        }
+        Class Program {
+            main(){
+                Var y : A = New A();
+                Var z : Int = 10;
+                y::$foo();
+                z::$foo();
+            }
+        }
+        

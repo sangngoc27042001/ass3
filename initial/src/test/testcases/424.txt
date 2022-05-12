@@ -1,9 +1,14 @@
 
-                        Class A
-                        {
+                    Class B{
+                        Var a:Float = 12;
+                        $c(){
+                            Return 11.2;
                         }
-                        Class B:A
-                        {
-                            Var a: A = New B();
+                    }
+                    Class A{
+                        b(){
+                            Var class_name:B = New B();
+                            Var b:Int = 1;
+                            b = B::$c();
                         }
-            
+                    }

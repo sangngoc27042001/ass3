@@ -1,1 +1,1 @@
-Undeclared Attribute: g
+Illegal Array Literal: [FieldAccess(Self(),Id(a)),IntLit(1),IntLit(2)]

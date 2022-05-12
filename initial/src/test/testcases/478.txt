@@ -1,23 +1,10 @@
 
-                        Class A {
-                           Var a:Int = 1;
-                           foo(){
-                                Return 1;
-                           }
-                        }
-                        Class B{
-                            Var b:A = New A();
-                            foo(){
-                                Return New A();
-                            }
-                        }
-                        Class C{
-                            foo(){
-                                Var c:B = New B();
-                                Var e:Int = c.b.a;
-                                e = c.b.foo();
-                                e = c.foo().a;
-                                e = c.foo().foo();
-                                Var f:Int = c.foo();
-                            }
-                        }
+        Class Program{
+            Val $someStatic : Int = 10;
+            main() {
+                Var Program : Float = 1.0;
+                Var x : Int = Program::$someStatic;
+                Var d: Int = 1 && 3.0;
+            }
+        }
+        

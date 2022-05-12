@@ -1,13 +1,8 @@
 
-                Class Program{
-
-                    foo(){}
-
-                    $someStaticMethod(){
-
-                        Self.foo();
-
+                    Class B{
+                        Val a:Int = 12;
+                        b(){Return 1.2;}
                     }
-
-                }
-            
+                    Class A{
+                        Var c: B = New B(1,"Hello",3); ## Error Here ##
+                    }

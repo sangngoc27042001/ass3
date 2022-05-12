@@ -1,6 +1,10 @@
 
-                        Class A {
-                           $fooExp1(x:Float; y:String){
-                                Var b: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1));
-                           }
-                        }
+        Class A{
+            Val a, d: Int = 1, 2;
+        }
+        Class Program{
+            main(a:Int){
+                
+            }
+        }
+            

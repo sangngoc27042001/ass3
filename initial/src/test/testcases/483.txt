@@ -1,22 +1,35 @@
 
-                        Class A {
-                           Var a:Int = 1;
-                           $fooExp1(x:Float; y:String){
-                                Return 1;
-                           }
-                           $fooExp2(x:Float; y:String){
-                                Return x;
-                           }
-                           $fooExp3(x:Float; y:String){
-                                Return y;
-                           }
-                        }
-                        Class B{
-                            foo2(){
-                                Var e:Float = (New A()).a;
-                                e = A::$fooExp1(1, "a");
-                                e = A::$fooExp2(1, "a");
-                                Var f:String = A::$fooExp3(1, "a");
-                                Var g:Float = A::$fooExp3(1, "a");
-                            }
-                        }
+        Class A{
+            Val $B: Int = 10;
+        }
+
+        Class B{
+            Val C: Int = A::$B;
+            a(a : Int){
+                If (a % 2 == 0){
+                    Return Array("a");
+                }
+                Else{
+                    Return Array("b");    
+                }
+            }
+            func1(){
+                Var s, ss: Int;
+                Var result : String = "I";
+                Foreach(s In 1 .. 100){
+                    Foreach(ss In 1 .. 100){
+                        result = result +. (Self.a(ss))[0];
+                        Break;
+                    }
+                }
+                Return result;
+                Break;
+            }
+        }
+        Class Program {
+            Var C: A = New A();
+            main(){
+                Val b: Int = Self.C.B;
+            }
+        }
+        

@@ -1,1 +1,1 @@
-Type Mismatch In Constant Declaration: ConstDecl(Id(d),IntType,BinaryOp(+,Id(a),Id(b)))
+Undeclared Class: C

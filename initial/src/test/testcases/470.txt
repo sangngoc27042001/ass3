@@ -1,11 +1,1 @@
-
-                        Class E {
-                           func() {
-                           }
-                        }
-                        Class Test{
-                          test() {
-                                Var e: E = New E();
-                                Return e.func;
-                          }
-                        } 
+Class Program{ main(a:Int){} Var x: Boolean = (True == False) || (1 != 2) && False; }

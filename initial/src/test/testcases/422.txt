@@ -1,19 +1,8 @@
 
-                        Class Student
-                        {
-                            Var name: String;
-                            Var ID: Int;
-                            Constructor(newName: String; newID : Int)
-                            {
-                                Self.name = newName;
-                                Self.ID = newID;
-                            }
+                    Class B{}
+                    Class A{
+                        b(){
+                            Val b:Int = 2;
+                            b = 3;
                         }
-                        Class Program
-                        {
-                            main()
-                            {
-                                Var myStudent: Student = New Student ();
-                            }
-                        }
-            
+                    }

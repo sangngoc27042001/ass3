@@ -1,1 +1,1 @@
-Undeclared Class: B
+Redeclared Attribute: a

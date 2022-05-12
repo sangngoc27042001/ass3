@@ -1,1 +1,1 @@
-No Entry Point
+Type Mismatch In Statement: VarDecl(Id(x),IntType,BinaryOp(+,FloatLit(1.0),FloatLit(2.0)))

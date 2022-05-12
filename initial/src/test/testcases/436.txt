@@ -1,10 +1,9 @@
 
-                Class A {
-                  Var a: Int;
-                }
-                Class B: A {
-                   foo(){
-                        Var x: Int = Self.a;
-                   }
-                }
-            
+                    Class B{
+                        Val a:Int = 12;
+                        b(){Return 1.2;}
+                        Constructor(a:Int; b:Int){Return 1;}
+                    }
+                    Class A{
+                        Var c: B = New B(1,"Hello"); ## Error Here ##
+                    }

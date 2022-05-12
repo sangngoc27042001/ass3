@@ -1,8 +1,1 @@
-
-                        Class A{
-                            Var a:Int = 1;
-                            foo(){
-                                Var b:Int = Self.a;
-                                Var c:Int = a;
-                            }
-                        } 
+Class Program{ main(a:Int){} Var x: Int = 3 / 4; }

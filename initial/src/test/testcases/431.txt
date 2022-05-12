@@ -1,7 +1,9 @@
 
-                Class A {
-                    main(a: Int){
-                        Return 1;
+                    Class B{
+                        Val a:Int = 12;
+                        b(){Return 1.2;}
                     }
-                }
-            
+                    Class A{
+                        Var b: B = New B();
+                        Var c: B = New B(1,2); ## Error Here ##
+                    }

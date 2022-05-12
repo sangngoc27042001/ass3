@@ -1,9 +1,13 @@
 
-                        Class A
-                        {
+                    Class B{
+                        Val a:Int = 12;
+                        Var b:Float = 12;
+                    }
+                    Class A{
+                        b(){
+                            Var class_name:B = New B();
+                            Var b:Int = 1;
+                            b = class_name.a;
+                            b = class_name.b;
                         }
-                        Class B:A
-                        {
-                            Var a: A = New C();
-                        }
-            
+                    }
