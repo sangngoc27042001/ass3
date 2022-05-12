@@ -1,8 +1,9 @@
 
-                        Class C{
-                            e(){
-                                Var c:Float = --------1.22;
-                                Var d:Boolean = !((("abc" +. "def") ==. "ghi") || False);
-                                Var e:Float = !!!!--1.22;
-                            }
+                        Class A
+                        {
                         }
+                        Class B:A
+                        {
+                            Var a: A = New B();
+                        }
+            

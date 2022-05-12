@@ -1,0 +1,17 @@
+
+        Class A{
+            Val $a: Int = 2;
+            Val a: Int = 3;
+        }
+        Class B : A {
+            Sicla(){
+                Var s: Int = Self.a;
+                Return 1;
+            }
+        }
+        Class Program{
+            main() {
+
+            }
+        }
+        

@@ -1,1 +1,1 @@
-Redeclared Constant: b
+Illegal Constant Expression: BinaryOp(-,FieldAccess(Self(),Id(a)),IntLit(1))
