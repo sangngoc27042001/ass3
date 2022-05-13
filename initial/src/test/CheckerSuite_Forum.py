@@ -668,7 +668,7 @@ class CheckerSuite(unittest.TestCase):
             """
 
         expect = "Type Mismatch In Statement: Return()"
-        self.assertTrue(TestChecker.test(input, expect, 432))
+        self.assertTrue(TestChecker.test(input, expect, 442))
 
     def test_443(self):
         input = """
@@ -680,9 +680,9 @@ class CheckerSuite(unittest.TestCase):
             """
 
         expect = "Type Mismatch In Statement: Return(IntLit(1))"
-        self.assertTrue(TestChecker.test(input, expect, 432))
+        self.assertTrue(TestChecker.test(input, expect, 443))
 
-    def test_399(self):
+    def test_444(self):
         input = """
                 Class A {
                     Constructor(){
@@ -697,4 +697,19 @@ class CheckerSuite(unittest.TestCase):
             """
 
         expect = "No Entry Point"
-        self.assertTrue(TestChecker.test(input, expect, 432))
+        self.assertTrue(TestChecker.test(input, expect, 444))
+
+    def test_445(self):
+        input = """
+                Class Program {
+                    Var a: Int;
+                    Val b: Int = 0;
+                    Var c: Int;
+                    Val arr: Array[Int,2] = Array(1, Self.a);
+                    Val test3: Int = Self.arr[Self.b];
+                    Val test4: Int = Self.arr[Self.c];
+                }
+            """
+
+        expect = "Illegal Constant Expression: ArrayCell(FieldAccess(Self(),Id(arr)),[FieldAccess(Self(),Id(c))])"
+        self.assertTrue(TestChecker.test(input, expect, 444))
